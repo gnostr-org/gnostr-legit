@@ -1,4 +1,4 @@
-# Legit
+# Legit [![legit](https://github.com/RandyMcMillan/legit/actions/workflows/automate.yml/badge.svg)](https://github.com/RandyMcMillan/legit/actions/workflows/automate.yml)
 
 Legit is a tool for generating git commits with a custom commit hash prefix, like "000000".
 
