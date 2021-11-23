@@ -74,6 +74,7 @@ if [[ "$OSTYPE" == "linux"* ]]; then
             report
         fi
         apt install libssl-dev
+        apt install rustc
     fi
     if [[ "$OSTYPE" == "linux-musl" ]]; then
         PACKAGE_MANAGER=apk
