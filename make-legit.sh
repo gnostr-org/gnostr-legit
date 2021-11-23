@@ -155,5 +155,4 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     sudo install -v ././target/release/legit /usr/local/bin/legit
 else
     find  /usr/local/bin -iname "legit" -print
-    find  ~ -iname "legit" -print
 fi
