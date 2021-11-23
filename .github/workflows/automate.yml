@@ -29,18 +29,11 @@ jobs:
     steps:
       - name: Print github workspace
         run: |
-          git clone https://github.com/randymcmillan/dotfiles ~/dotfiles
-          cd ~/dotfiles && make brew && make all
-          echo "GITHUB_WORKSPACE = $GITHUB_WORKSPACE"
-          echo "github.workspace = ${{ github.workspace }}"
-          echo "pr.ref = ${{github.event.pull_request.head.ref}}"
-          echo "github.ref = ${{ github.ref }}"
-          echo "$GITHUB_CONTEXT"
           printenv
 
 # Cross Compile 
-  run-automate-sh:
-    runs-on: ubuntu-18.04
+  ubuntu-20-host:
+    runs-on: ubuntu-20.04
     steps:
       ## REF: https://githubmemory.com/repo/Gisleburt/cancel-workflow-action
       - uses: styfle/cancel-workflow-action@0.8.0
@@ -50,13 +43,15 @@ jobs:
       - uses: actions/checkout@v2
       - name: Make
         run: |
-          ./automate.sh
-          ./make-legit.sh
-          git diff
+          sudo -s &
+          y | ./make-legit.sh
+          legit -h
+          y | make legit
+          legit -h
 
 # Cross Compile 
-  ubuntu-18-host:
-    runs-on: ubuntu-18.04
+  ubuntu-latest-host:
+    runs-on: ubuntu-latest
     steps:
       ## REF: https://githubmemory.com/repo/Gisleburt/cancel-workflow-action
       - uses: styfle/cancel-workflow-action@0.8.0
@@ -66,9 +61,11 @@ jobs:
       - uses: actions/checkout@v2
       - name: Make
         run: |
-          ./automate.sh
-          ./make-legit.sh
-          git diff
+          sudo -s &
+          y | ./make-legit.sh
+          legit -h
+          y | make legit
+          legit -h
 
 # Cross Compile 
   macos-10-host:
@@ -82,7 +79,27 @@ jobs:
       - uses: actions/checkout@v2
       - name: Make
         run: |
-          ./automate.sh
-          ./make-legit.sh
-          git diff
+          sudo -s &
+          y | ./make-legit.sh
+          legit -h
+          y | make legit
+          legit -h
+
+# Cross Compile 
+  macos-latest-host:
+    runs-on: macos-latest
+    steps:
+      ## REF: https://githubmemory.com/repo/Gisleburt/cancel-workflow-action
+      - uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v2
+      - name: Make
+        run: |
+          sudo -s &
+          y | ./make-legit.sh
+          legit -h
+          y | make legit
+          legit -h
 

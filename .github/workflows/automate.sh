@@ -120,3 +120,4 @@ else
 fi
 cargo build --release
 sudo install -v ././target/release/legit /usr/local/bin/legit
+legit -h
