@@ -180,7 +180,7 @@ touch-time: remove
 automate: touch-time git-add
 	@echo automate
 	./automate.sh
-	test legit && legit . -p 000000 -m "$(shell date +%s)"
+	test legit && legit . -p 000000 -m "$(shell date +%s):make automate"
 
 .PHONY: docs
 docs: git-add
