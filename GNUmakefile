@@ -180,7 +180,7 @@ touch-time: remove
 automate: touch-time git-add
 	@echo automate
 	./automate.sh
-	test legit && legit . -p 00000 -m "$(git diff HEAD~1)"
+	test legit && legit . -p 00000 -m "$(git diff HEAD~2)"
 
 .PHONY: docs
 docs: git-add
