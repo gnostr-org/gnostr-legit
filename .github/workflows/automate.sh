@@ -121,6 +121,7 @@ elif [[ "$OSTYPE" == "freebsd"* ]]; then
 else
     echo TODO add support for $OSTYPE
 fi
+#sudo curl https://sh.rustup.rs -sSf > rustup.sh && chmod +x rustup.sh && ./rustup.sh -y
 cargo build --release
 sudo install -v ././target/release/legit /usr/local/bin/legit
 legit -h
