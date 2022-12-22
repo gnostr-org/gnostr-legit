@@ -179,8 +179,8 @@ touch-time: remove
 .PHONY: automate
 automate: touch-time git-add
 	@echo automate
-	./.github/workflows/automate.sh
-	test legit && legit . -p 00000 -m "$(git diff HEAD~1)"
+	./automate.sh
+	test legit && legit . -p 00000 -m "$(shell git diff HEAD~1)"
 
 .PHONY: docs
 docs: git-add
