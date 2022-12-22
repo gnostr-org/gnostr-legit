@@ -149,14 +149,13 @@ git-add:
 
 .PHONY: push
 .ONESHELL:
-push: touch-time
+push: touch-time git-add
+	test legit && legit . -p 00000 -m "$(shell date +%s):make push"
 	@git push -f origin	+master:master
 
 .PHONY: branch
 .ONESHELL:
 branch: docs touch-time touch-block-time
-	@echo branch
-
 	git add --ignore-errors GNUmakefile TIME GLOBAL .github *.sh *.yml
 	git add --ignore-errors .github
 	git commit -m 'make branch by $(GIT_USER_NAME) on $(TIME)'

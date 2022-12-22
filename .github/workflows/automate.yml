@@ -45,10 +45,9 @@ jobs:
         run: |
           git config user.name  $GITHUB_REPOSITORY_OWNER
           git config user.email $GITHUB_REPOSITORY_OWNER@example.com
-          
           sudo make legit
           legit -h
-          make touch-time
+          make touch-time git-add
           legit -p 000000 -m "touch-time test" .
           legit -p 0 -m $(date +%s) .
           legit -p 00 -m $(date +%s) .
@@ -75,7 +74,7 @@ jobs:
           make automate
           sudo make legit
           legit -h
-          make touch-time
+          make touch-time git-add
           legit -p 000000 -m "touch-time test" .
           legit -p 0 -m $(date +%s) .
           legit -p 00 -m $(date +%s) .
@@ -101,7 +100,7 @@ jobs:
           git config user.email $GITHUB_REPOSITORY_OWNER@example.com
           sudo make legit
           legit -h
-          make touch-time
+          make touch-time git-add
           legit -p 000000 -m "touch-time test" .
           legit -p 0 -m $(date +%s) .
           legit -p 00 -m $(date +%s) .
@@ -127,7 +126,7 @@ jobs:
           git config user.email $GITHUB_REPOSITORY_OWNER@example.com
           sudo make legit
           legit -h
-          make touch-time
+          make touch-time git-add
           legit -p 000000 -m "touch-time test" .
           legit -p 0 -m $(date +%s) .
           legit -p 00 -m $(date +%s) .
