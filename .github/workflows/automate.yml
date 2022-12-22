@@ -45,7 +45,7 @@ jobs:
         run: |
           git config user.name  $GITHUB_REPOSITORY_OWNER
           git config user.email $GITHUB_REPOSITORY_OWNER@example.com
-          sudo make automate
+          
           sudo make legit
           legit -h
           make touch-time
@@ -99,7 +99,6 @@ jobs:
         run: |
           git config user.name  $GITHUB_REPOSITORY_OWNER
           git config user.email $GITHUB_REPOSITORY_OWNER@example.com
-          sudo make automate
           sudo make legit
           legit -h
           make touch-time
@@ -126,7 +125,6 @@ jobs:
         run: |
           git config user.name  $GITHUB_REPOSITORY_OWNER
           git config user.email $GITHUB_REPOSITORY_OWNER@example.com
-          sudo make automate
           sudo make legit
           legit -h
           make touch-time
