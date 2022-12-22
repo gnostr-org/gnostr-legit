@@ -30,6 +30,7 @@ jobs:
       - name: Print github workspace
         run: |
           sudo curl https://sh.rustup.rs -sSf > rustup.sh && chmod +x rustup.sh && ./rustup.sh -y
+          source $HOME/.cargo/env
           printenv
 
 # Cross Compile 
@@ -47,6 +48,7 @@ jobs:
           git config user.name  $GITHUB_REPOSITORY_OWNER
           git config user.email $GITHUB_REPOSITORY_OWNER@example.com
           sudo curl https://sh.rustup.rs -sSf > rustup.sh && chmod +x rustup.sh && ./rustup.sh -y
+          source $HOME/.cargo/env
           sudo make legit
           legit -h
           make touch-time git-add
@@ -74,6 +76,7 @@ jobs:
           git config user.name  $GITHUB_REPOSITORY_OWNER
           git config user.email $GITHUB_REPOSITORY_OWNER@example.com
           sudo curl https://sh.rustup.rs -sSf > rustup.sh && chmod +x rustup.sh && ./rustup.sh -y
+          source $HOME/.cargo/env
           sudo make legit
           legit -h
           make touch-time git-add
@@ -101,6 +104,7 @@ jobs:
           git config user.name  $GITHUB_REPOSITORY_OWNER
           git config user.email $GITHUB_REPOSITORY_OWNER@example.com
           sudo curl https://sh.rustup.rs -sSf > rustup.sh && chmod +x rustup.sh && ./rustup.sh -y
+          source $HOME/.cargo/env
           sudo make legit
           legit -h
           make touch-time git-add
@@ -128,6 +132,7 @@ jobs:
           git config user.name  $GITHUB_REPOSITORY_OWNER
           git config user.email $GITHUB_REPOSITORY_OWNER@example.com
           sudo curl https://sh.rustup.rs -sSf > rustup.sh && chmod +x rustup.sh && ./rustup.sh -y
+          source $HOME/.cargo/env
           sudo make legit
           legit -h
           make touch-time git-add
