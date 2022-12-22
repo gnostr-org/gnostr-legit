@@ -102,7 +102,6 @@ help:
 	@echo ""
 	@echo "  make docs"
 	@echo "  make report"
-	@echo "  make awesome"
 	@echo "  make git-add"
 	@echo "  make remove"
 	@echo "  make global-branch"
@@ -138,21 +137,16 @@ report:
 .ONESHELL:
 git-add: remove
 	@echo git-add
+	$(MAKE) touch-time
 
 	git config advice.addIgnoredFile false
 	#git add *
 
 	git add --ignore-errors GNUmakefile
 	git add --ignore-errors README.md
-	#git add --ignore-errors sources/*.md
-	#git add --ignore-errors sources/*.html
+	git add --ignore-errors *.html
 	git add --ignore-errors TIME
-	#git add --ignore-errors GLOBAL
-	#git add --ignore-errors CNAME
-	#git add --ignore-errors touch-block-time.py
-	#git add --ignore-errors *.py
-	#git add --ignore-errors sources/*.py
-	#git add --ignore-errors index.html
+	git add --ignore-errors CNAME
 	git add --ignore-errors .gitignore
 	git add --ignore-errors .github
 	git add --ignore-errors *.sh
@@ -190,20 +184,12 @@ automate: touch-time git-add
 	test legit && legit . -p 00000 -m "make automate"
 
 .PHONY: docs
-docs: git-add awesome
-	#@echo docs
+docs: git-add
 	bash -c "if pgrep MacDown; then pkill MacDown; fi"
-	#bash -c "curl https://raw.githubusercontent.com/sindresorhus/awesome/main/readme.md -o ./sources/AWESOME-temp.md"
-	bash -c 'cat $(PWD)/sources/HEADER.md                >  $(PWD)/README.md'
-	bash -c 'cat $(PWD)/sources/COMMANDS.md              >> $(PWD)/README.md'
-	bash -c 'cat $(PWD)/sources/FOOTER.md                >> $(PWD)/README.md'
-	#brew install pandoc
 	bash -c "if hash pandoc 2>/dev/null; then echo; fi || brew install pandoc"
-	#bash -c 'pandoc -s README.md -o index.html  --metadata title="$(GH_USER_REPO)" '
-	bash -c 'pandoc -s README.md -o index.html'
-	#bash -c "if hash open 2>/dev/null; then open README.md; fi || echo failed to open README.md"
-	git add --ignore-errors sources/*.md
+	bash -c 'pandoc -s README.md -o index.html  --metadata title="$(PROJECT_NAME)" '
 	git add --ignore-errors *.md
+	git add --ignore-errors *.html
 	#git ls-files -co --exclude-standard | grep '\.md/$\' | xargs git
 
 .PHONY: legit
