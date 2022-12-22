@@ -98,6 +98,8 @@ init: help
 .PHONY: help
 help:
 	@echo ""
+	@echo "  make legit"
+	@echo ""
 	@echo "  make docs"
 	@echo "  make report"
 	@echo "  make awesome"
@@ -114,7 +116,7 @@ help:
 	@echo ""
 
 .PHONY: report
-report: 
+report:
 	@echo ''
 	@echo '	[ARGUMENTS]	'
 	@echo '      args:'
@@ -201,7 +203,7 @@ docs: git-add awesome
 	#bash -c "if hash open 2>/dev/null; then open README.md; fi || echo failed to open README.md"
 	git add --ignore-errors sources/*.md
 	git add --ignore-errors *.md
-	#git ls-files -co --exclude-standard | grep '\.md/$\' | xargs git 
+	#git ls-files -co --exclude-standard | grep '\.md/$\' | xargs git
 
 .PHONY: legit
 .ONESHELL:
@@ -219,4 +221,5 @@ failure:
 .PHONY: success
 success:
 	@-/bin/true && ([ $$? -eq 0 ] && echo "success!") || echo "failure!"
-
+# vim: set noexpandtab:
+# vim: set setfiletype make
