@@ -136,12 +136,7 @@ report:
 .PHONY: git-add
 .ONESHELL:
 git-add: remove
-	@echo git-add
-	$(MAKE) touch-time
-
 	git config advice.addIgnoredFile false
-	#git add *
-
 	git add --ignore-errors GNUmakefile
 	git add --ignore-errors README.md
 	git add --ignore-errors *.html
