@@ -173,8 +173,8 @@ branch: docs touch-time touch-block-time
 touch-time: remove
 	@echo touch-time
 	echo $(TIME) $(shell git rev-parse HEAD) > TIME
-	git add TIME
-	@git commit --allow-empty -m 'make touch-time'
+	$(MAKE) git-add
+	test legit && legit . -p 00000 -m "$(shell date +%s):make touch-time"
 
 .PHONY: automate
 automate: touch-time git-add
