@@ -155,8 +155,6 @@ git-add: remove
 .PHONY: push
 .ONESHELL:
 push: touch-time
-	@echo push
-	bash -c "git commit --allow-empty -m '$(TIME)'"
 	bash -c "git push -f origin	+master:master"
 
 .PHONY: branch
@@ -176,6 +174,7 @@ touch-time: remove
 	@echo touch-time
 	echo $(TIME) $(shell git rev-parse HEAD) > TIME
 	git add TIME
+	@git commit --allow-empty -m 'make touch-time'
 
 .PHONY: automate
 automate: touch-time git-add
