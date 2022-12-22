@@ -43,6 +43,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Make
         run: |
+          sudo make automate
           sudo make legit
           legit -h
           git config user.name $GITHUB_REPOSITORY_OWNER
@@ -96,6 +97,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Make
         run: |
+          sudo make automate
           sudo make legit
           legit -h
           git config user.name $GITHUB_REPOSITORY_OWNER
@@ -122,6 +124,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Make
         run: |
+          sudo make automate
           sudo make legit
           legit -h
           git config user.name $GITHUB_REPOSITORY_OWNER
