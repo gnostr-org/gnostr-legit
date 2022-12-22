@@ -135,7 +135,7 @@ report:
 
 .PHONY: git-add
 .ONESHELL:
-git-add: remove
+git-add:
 	git config advice.addIgnoredFile false
 	git add --ignore-errors GNUmakefile
 	git add --ignore-errors README.md
@@ -168,8 +168,6 @@ branch: docs touch-time touch-block-time
 touch-time: remove
 	@echo touch-time
 	echo $(TIME) $(shell git rev-parse HEAD) > TIME
-	$(MAKE) git-add
-	test legit && legit . -p 00000 -m "$(shell date +%s):make touch-time"
 
 .PHONY: automate
 automate: touch-time git-add
@@ -178,12 +176,12 @@ automate: touch-time git-add
 	test legit && legit . -p 00000 -m "$(shell date +%s):make automate"
 
 .PHONY: docs
-docs: git-add
+docs: touch-time git-add
 	bash -c "if pgrep MacDown; then pkill MacDown; fi"
 	bash -c "if hash pandoc 2>/dev/null; then echo; fi || brew install pandoc"
 	bash -c 'pandoc -s README.md -o index.html  --metadata title="$(PROJECT_NAME)" '
-	git add --ignore-errors *.md
-	git add --ignore-errors *.html
+	$(MAKE) git-add
+	test legit && legit . -p 00000 -m "$(shell date +%s):make docs"
 	#git ls-files -co --exclude-standard | grep '\.md/$\' | xargs git
 
 .PHONY: legit
