@@ -28,6 +28,9 @@ checkbrew() {
         if !hash git 2>/dev/null; then
             brew install git
         fi
+        if !hash rustc 2>/dev/null; then
+			brew install rust
+		fi
         #if !hash pandoc 2>/dev/null; then
             brew install pandoc
         #fi

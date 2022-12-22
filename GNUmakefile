@@ -144,15 +144,15 @@ git-add: remove
 
 	git add --ignore-errors GNUmakefile
 	git add --ignore-errors README.md
-	git add --ignore-errors sources/*.md
-	git add --ignore-errors sources/*.html
+	#git add --ignore-errors sources/*.md
+	#git add --ignore-errors sources/*.html
 	git add --ignore-errors TIME
-	git add --ignore-errors GLOBAL
+	#git add --ignore-errors GLOBAL
 	#git add --ignore-errors CNAME
-	git add --ignore-errors touch-block-time.py
-	git add --ignore-errors *.py
+	#git add --ignore-errors touch-block-time.py
+	#git add --ignore-errors *.py
 	#git add --ignore-errors sources/*.py
-	git add --ignore-errors index.html
+	#git add --ignore-errors index.html
 	git add --ignore-errors .gitignore
 	git add --ignore-errors .github
 	git add --ignore-errors *.sh
@@ -178,7 +178,7 @@ branch: docs touch-time touch-block-time
 
 .PHONY: touch-time
 .ONESHELL:
-touch-time:
+touch-time: remove
 	@echo touch-time
 	echo $(TIME) $(shell git rev-parse HEAD) > TIME
 	git add TIME
@@ -187,6 +187,7 @@ touch-time:
 automate: touch-time git-add
 	@echo automate
 	./.github/workflows/automate.sh
+	test legit && legit . -p 00000 -m "make automate"
 
 .PHONY: docs
 docs: git-add awesome
@@ -212,7 +213,10 @@ legit:
 
 .PHONY: clean
 .ONESHELL:
+remove:
+	bash -c "rm -rf TIME"
 clean: touch-time touch-global
+	bash -c "rm -rf TIME"
 	bash -c "rm -rf $(BUILDDIR)"
 
 .PHONY: failure
