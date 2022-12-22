@@ -150,7 +150,7 @@ git-add:
 .PHONY: push
 .ONESHELL:
 push: touch-time
-	bash -c "git push -f origin	+master:master"
+	@git push -f origin	+master:master
 
 .PHONY: branch
 .ONESHELL:
