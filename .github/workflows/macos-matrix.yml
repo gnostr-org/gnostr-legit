@@ -33,21 +33,21 @@ jobs:
       - uses: actions/checkout@v2
       - name: printenv
         run: |
-          brew install libtool autoconf automake 
+          #brew install libtool autoconf automake 
           printenv
       - name: make
         run: |
           make
       - name: sudo make legit
         run: |
-          sudo make legit
+          sudo -su runner make legit
       - name: cargo build --release
         run: |
-          sudo cargo build --release
+          sudo  -su runner cargo build --release
 
       - name: cargo run 
         run: |
-          sudo cargo run
-          sudo cargo run . -p b -m ""
+          sudo -su runner  cargo run
+          sudo -su runner  cargo run . -p b -m ""
           #pipe handles non-zero return from legit default help
           sudo -su runner legit        | echo "${PIPESTATUS[0]}"
