@@ -154,4 +154,4 @@ else
     echo TODO add support for $OSTYPE
 fi
 
-#cargo build --release
+cargo build --release
