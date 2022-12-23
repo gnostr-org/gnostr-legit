@@ -37,6 +37,7 @@ jobs:
           printenv
       - name: make
         run: |
+          sudo apt-get install libssl-dev
           make
       - name: sudo make legit
         run: |
