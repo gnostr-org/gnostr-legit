@@ -26,7 +26,7 @@ jobs:
           #brew install libtool autoconf automake rust
           printenv
           make legit
-          shasum -a 256 target/release/legit > legit.sha256.txt
+          shasum -a 256 target/debug/legit > legit.sha256.txt
       - name: Save state
         run: echo "{name}={value}" >> $GITHUB_STATE
       - name: Set output
@@ -38,5 +38,5 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            target/release/legit
+            target/debug/legit
             legit.sha256.txt
