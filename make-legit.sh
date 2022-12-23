@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+if ! hash cargo 2>/dev/null; then
+sudo rm -rf $HOME/.cargo/bin
+sudo curl https://sh.rustup.rs -sSf > rustup.sh && chmod +x rustup.sh && ./rustup.sh -y
+source $HOME/.cargo/env
+fi
+
 #ENV VARS
 OS=$(uname)
 OS_VERSION=$(uname -r)
