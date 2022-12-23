@@ -43,11 +43,8 @@ jobs:
           sudo -su runner make legit
       - name: cargo build --release
         run: |
-          sudo  -su runner cargo build --release
+          sudo -su runner cargo build --release
 
-      - name: cargo run 
+      - name: cargo run
         run: |
-          sudo -su runner  cargo run
-          sudo -su runner  cargo run . -p b -m ""
-          #pipe handles non-zero return from legit default help
-          sudo -su runner legit        | echo "${PIPESTATUS[0]}"
+          sudo -su runner cargo run
