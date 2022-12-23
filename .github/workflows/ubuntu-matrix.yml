@@ -33,17 +33,18 @@ jobs:
       - uses: actions/checkout@v2
       - name: printenv
         run: |
+          #brew install libtool autoconf automake
           printenv
       - name: make
         run: |
           make
-      - name: sudo make install
+      - name: sudo make legit
         run: |
-          sudo make install
-      - name: man nostril
+          sudo -su runner make legit
+      - name: cargo build --release
         run: |
-          man nostril
-      - name: sudo -su runner nostril
+          sudo -su runner cargo build --release
+
+      - name: cargo run
         run: |
-          #pipe handles non-zero return from nostril default help
-          sudo -su runner nostril        | echo "${PIPESTATUS[0]}"
+          sudo -su runner cargo run | echo "${PIPESTATUS[0]}"
