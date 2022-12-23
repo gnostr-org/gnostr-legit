@@ -43,11 +43,11 @@ jobs:
           sudo make legit
       - name: cargo build --release
         run: |
-          cargo build --release
+          sudo cargo build --release
 
       - name: cargo run 
         run: |
-          cargo run
-          cargo run . -p b -m ""
-          #pipe handles non-zero return from nostril default help
-          sudo -su runner nostril        | echo "${PIPESTATUS[0]}"
+          sudo cargo run
+          sudo cargo run . -p b -m ""
+          #pipe handles non-zero return from legit default help
+          sudo -su runner legit        | echo "${PIPESTATUS[0]}"
