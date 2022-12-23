@@ -23,8 +23,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: "build pre-release"
         run: |
-          make
-          shasum -a 256 nostril > nostril.sha256.txt
+          #brew install libtool autoconf automake rust
+          printenv
+          make legit
+          shasum -a 256 target/release/legit > legit.sha256.txt
       - name: Save state
         run: echo "{name}={value}" >> $GITHUB_STATE
       - name: Set output
@@ -36,5 +38,5 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            nostril
-            nostril.sha256.txt
+            target/release/legit
+            legit.sha256.txt
