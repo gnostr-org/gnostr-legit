@@ -47,4 +47,4 @@ jobs:
 
       - name: cargo run
         run: |
-          sudo -su runner cargo run
+          sudo -su runner cargo run | echo "${PIPESTATUS[0]}"
