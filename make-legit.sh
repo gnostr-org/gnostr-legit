@@ -154,4 +154,5 @@ else
     echo TODO add support for $OSTYPE
 fi
 
-cargo build --release
+sudo -su $(whoami) cargo build
+sudo -su $(whoami) cargo build --release
