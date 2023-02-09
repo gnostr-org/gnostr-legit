@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
-if ! hash cargo 2>/dev/null; then
-sudo -su $(whoami) rm -rf $HOME/.cargo/bin
-sudo -su $(whoami) curl https://sh.rustup.rs -sSf > rustup.sh && chmod +x rustup.sh && ./rustup.sh -y
-source $HOME/.cargo/env
-fi
+function install_rustup(){
+
+	if ! hash rustc 2>/dev/null; then
+		sudo -su "$(whoami)" curl https://sh.rustup.rs -sSf > rustup.sh && \
+			chmod +x rustup.sh && ./rustup.sh -y && \
+			source $HOME/.cargo/env
+	else
+		command -v "$(which rustc)"
+		command -v "$(which cargo)"
+	fi
+}
 
 #ENV VARS
 OS=$(uname)
@@ -37,9 +43,7 @@ checkbrew() {
         if hash openssl 2>/dev/null; then
             brew install openssl@1.1
         fi
-        if hash cargo 2>/dev/null; then
-            brew install rust
-        fi
+		install_rustup
         true
     else
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
