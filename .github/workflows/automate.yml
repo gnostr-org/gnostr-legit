@@ -25,15 +25,23 @@ on:
 jobs:
   github-workspace:
     name: github-workspace
-    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
     steps:
+      - uses: styfle/cancel-workflow-action@0.11.0
+        with:
+          access_token: ${{ github.token }}
       - name: Print github workspace
         run: |
           printenv
 
-# Cross Compile 
-  ubuntu-20-host:
-    runs-on: ubuntu-20.04
+  ubuntu-host-matrix:
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       ## REF: https://githubmemory.com/repo/Gisleburt/cancel-workflow-action
       - uses: styfle/cancel-workflow-action@0.11.0
