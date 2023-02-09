@@ -52,7 +52,7 @@ jobs:
       - name: sudo make legit
         run: |
           sudo apt-get install libssl-dev
-          sudo su ${RUNNER_USER} make legit
+          sudo su ${RUNNER_USER} -s make legit
       - name: cargo run -h
         run: |
           cargo run -h
