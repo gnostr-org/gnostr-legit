@@ -96,7 +96,9 @@ if [[ "$OSTYPE" == "linux"* ]]; then
             $PACKAGE_MANAGER $INSTALL $AWK
             report
         fi
-		sudo apt-get install libssl-dev rustc cargo
+		#sudo apt-get install -y libssl-dev
+		#sudo apt-get install -y            rustc
+		#sudo apt-get install -y                  cargo
     fi
     if [[ "$OSTYPE" == "linux-musl" ]]; then
         PACKAGE_MANAGER=apk
@@ -170,5 +172,7 @@ else
     echo TODO add support for $OSTYPE
 fi
 
-sudo -su $(whoami) cargo build
-sudo -su $(whoami) cargo build --release
+# sudo -su $(whoami) cargo build
+# sudo -su $(whoami) cargo build --release
+$(which cargo) build
+$(which cargo) build --release
