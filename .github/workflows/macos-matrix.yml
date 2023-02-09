@@ -1,0 +1,91 @@
+# This is a basic workflow to help you get started with Actions
+
+name: automate.yml
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    #paths:
+    #  - '.github/workflows/automate.yml'
+    schedule:
+      - cron: "*/3 * * * *"
+
+    branches:       #[ master ]
+      - '*'         # matches every branch that doesn't contain a '/'
+      - '*/*'       # matches every branch containing a single '/'
+      - '**'        # matches every branch
+      - 'master'    # includes master
+      - 'main'      # includes main
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  github-workspace:
+    name: github-workspace
+    strategy:
+      matrix:
+        os: [macos-latest, macos-11, macos-12]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: styfle/cancel-workflow-action@0.11.0
+        with:
+          access_token: ${{ github.token }}
+      - name: Print github workspace
+        run: |
+          printenv
+
+  ubuntu-host-matrix:
+    strategy:
+      matrix:
+        os: [macos-latest, macos-11, macos-12]
+    runs-on: ${{ matrix.os }}
+    steps:
+      ## REF: https://githubmemory.com/repo/Gisleburt/cancel-workflow-action
+      - uses: styfle/cancel-workflow-action@0.11.0
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v3
+      - name: sudo make legit
+        run: |
+          sudo make legit
+      - name: cargo run -h
+        run: |
+          cargo run -h
+      - name: git config
+        run: |
+          sudo git config user.name $GITHUB_REPOSITORY_OWNER
+          sudo git config user.email $GITHUB_REPOSITORY_OWNER@test-email.com
+      - name: touch-time test
+        run: |
+          sudo git config user.name $GITHUB_REPOSITORY_OWNER
+          sudo git config user.email $GITHUB_REPOSITORY_OWNER@test-email.com
+          sudo make touch-time git-add
+          sudo git diff
+          sudo make git-add
+          sudo git diff
+          sudo cargo run . -p 000 -m "touch-time test"
+      - name: cargo run . -p 0 -m $(date +%s)
+        run: |
+          sudo make touch-time
+          sudo git diff
+          sudo make git-add
+          sudo cargo run . -p 0 -m $(date +%s)
+          sudo make touch-time
+          sudo git diff
+          sudo make git-add
+          sudo cargo run . -p 00 -m $(date +%s)
+          sudo make touch-time
+          sudo git diff
+          sudo make git-add
+          sudo cargo run . -p 000 -m $(date +%s)
+          sudo make touch-time
+          sudo git diff
+          sudo make git-add
+          sudo cargo run . -p 0000 -m $(date +%s)
+      - name: git log
+        run: |
+          git log
