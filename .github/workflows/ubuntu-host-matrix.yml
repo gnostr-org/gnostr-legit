@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: automate.yml
+name: ubuntu-host-matrix
 
 # Controls when the action will run. 
 on:
