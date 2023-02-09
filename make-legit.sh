@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 #TODO:
 if ! hash rustup-init 2>/dev/null; then
 sudo -su $(whoami) rm -rf $HOME/.cargo/bin
@@ -8,6 +7,17 @@ source $HOME/.cargo/env
 else
     command -v rustup-init
 fi
+function install_rustup(){
+
+	if ! hash rustc 2>/dev/null; then
+		sudo -su "$(whoami)" curl https://sh.rustup.rs -sSf > rustup.sh && \
+			chmod +x rustup.sh && ./rustup.sh -y && \
+			source $HOME/.cargo/env
+	else
+		command -v "$(which rustc)"
+		command -v "$(which cargo)"
+	fi
+}
 
 #ENV VARS
 OS=$(uname)
@@ -46,6 +56,7 @@ checkbrew() {
             rustup-init
             source ~/.bashrc
         fi
+		install_rustup
         true
     else
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"

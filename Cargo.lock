@@ -100,9 +100,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.58"
+version = "0.2.139"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6281b86796ba5e4366000be6e9e18bf35580adf9e63fbe2294aadb587613a319"
+checksum = "201de327520df007757c1f0adce6e827fe8562fbc28bfd9c15571c66ca1f5f79"
 
 [[package]]
 name = "libgit2-sys"
