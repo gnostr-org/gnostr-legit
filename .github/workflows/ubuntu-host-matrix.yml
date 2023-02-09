@@ -51,7 +51,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: sudo make legit
         run: |
-          make legit
+          echo $RUNNER_USER
+          sudo su $RUNNER_USER -s make legit
       - name: cargo run -h
         run: |
           cargo run -h
