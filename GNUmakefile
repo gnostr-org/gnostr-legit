@@ -194,7 +194,9 @@ docs: touch-time git-add## 	docs
 .PHONY: legit
 .ONESHELL:
 legit:## 	legit
-	./make-legit.sh
+	. make-legit.sh
+	$(MAKE) cargo-build
+	$(MAKE) cargo-install
 
 .PHONY: clean
 .ONESHELL:
