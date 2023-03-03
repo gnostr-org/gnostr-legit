@@ -58,6 +58,8 @@ jobs:
           sudo make touch-time git-add
           sudo git diff
           sudo make git-add
+          git config advice.addIgnoredFile false
+          git add --ignore-errors TIME
           sudo git diff
           sudo cargo run . -p 000 -m "touch-time test"
       - name: cargo run . -p 0 -m $(date +%s)
