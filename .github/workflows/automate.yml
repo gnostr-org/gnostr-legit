@@ -1,10 +1,6 @@
-# This is a basic workflow to help you get started with Actions
+name: act.yml
 
-name: automate.yml
-
-# Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     #paths:
     #  - '.github/workflows/automate.yml'
@@ -25,7 +21,7 @@ on:
 jobs:
   github-workspace:
     name: github-workspace
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Print github workspace
         run: |
@@ -33,7 +29,7 @@ jobs:
 
 # Cross Compile 
   ubuntu-20-host:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Cargo cache
@@ -51,20 +47,12 @@ jobs:
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y
           source "$HOME/.cargo/env" && rustup default stable
           source "$HOME/.cargo/env" && cargo test --verbose
-          #cargo test --verbose
-      ## REF: https://githubmemory.com/repo/Gisleburt/cancel-workflow-action
-      #- uses: styfle/cancel-workflow-action@0.3.0
-      #  with:
-      #    access_token: ${{ github.token }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: cargo b
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y
           source "$HOME/.cargo/env" && rustup default stable
-          #cargo test --verbose
-          #git init
-          #make cargo-build
           source "$HOME/.cargo/env" && cargo b
           source "$HOME/.cargo/env" && cargo install  --path .
       - name: cargo run -h
