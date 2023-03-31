@@ -27,7 +27,7 @@ jobs:
         run: |
           printenv
 
-# Cross Compile 
+# Setup ubuntu cross compile first
   setup:
     runs-on: ubuntu-latest
     steps:
@@ -45,6 +45,11 @@ jobs:
       - name: Run tests
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y
+          echo $OS
+          if [[ $OS =~ ^ubuntu.*$ ]]; then
+            sudo apt-get update -y
+            sudo apt-get install -qq crossbuild-essential-arm64 crossbuild-essential-armhf
+          fi
           source "$HOME/.cargo/env" && rustup default stable
           source "$HOME/.cargo/env" && cargo test --verbose
 
