@@ -21,6 +21,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
+            brew install node
             ~/.cargo/registry
             ./target
           key: test-cargo-registry

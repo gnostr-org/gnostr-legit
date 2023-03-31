@@ -64,8 +64,8 @@ export GIT_REPO_NAME
 GIT_REPO_PATH							:= $(HOME)/$(GIT_REPO_NAME)
 export GIT_REPO_PATH
 
-BASENAME := $(shell basename -s .git `git config --get remote.origin.url`)
-export BASENAME
+#BASENAME := $(shell basename -s .git `git config --get remote.origin.url`)
+#export BASENAME
 
 # Force the user to explicitly select public - public=true
 # export KB_PUBLIC=public && make keybase-public
