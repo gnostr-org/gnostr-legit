@@ -1,5 +1,5 @@
 act:
-	@act -vb  -W .github/workflows/automate.yml #-P ubuntu-latest=node
+	@act -vbr  -W .github/workflows/automate.yml #-P ubuntu-latest=node
 
 act-rust-1_67:## 	docker rust image
 	@act -vr  -W .github/workflows/rust-cross.yml #-P ubuntu-latest=node
