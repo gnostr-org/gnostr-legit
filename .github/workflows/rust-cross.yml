@@ -16,7 +16,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Cargo cache
         uses: actions/cache@v2
         with:
@@ -27,7 +27,10 @@ jobs:
       - name: List
         run: find ./
       - name: Run tests
-        run: cargo test --verbose
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y
+          source "$HOME/.cargo/env" && rustup default stable
+          source "$HOME/.cargo/env" && cargo test --verbose
 
   build:
     strategy:
@@ -51,8 +54,8 @@ jobs:
           #  OS: ubuntu-latest
           #- TARGET: arm-unknown-linux-musleabihf # raspberry pi 0-1, not tested
           #  OS: ubuntu-latest
-          - TARGET: x86_64-apple-darwin # tested on a mac, is not properly signed so there are security warnings
-            OS: macos-latest
+          #- TARGET: x86_64-apple-darwin # tested on a mac, is not properly signed so there are security warnings
+          #  OS: macos-latest
           #- TARGET: x86_64-pc-windows-msvc # tested on a windows machine
           #  OS: windows-latest
     needs: test
@@ -62,7 +65,7 @@ jobs:
       TARGET: ${{ matrix.TARGET }}
       OS: ${{ matrix.OS }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Cargo cache
         uses: actions/cache@v2
         with:
@@ -131,20 +134,20 @@ jobs:
           path: |
             ./artifacts
 
-  # deploys to github releases on tag
-  deploy:
-    #if: startsWith(github.ref, 'refs/tags/')
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: result
-          path: ./artifacts
-      - name: List
-        run: find ./artifacts
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: ./artifacts/*.tar.gz
+#  # deploys to github releases on tag
+#  deploy:
+#    #if: startsWith(github.ref, 'refs/tags/')
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: result
+#          path: ./artifacts
+#      - name: List
+#        run: find ./artifacts
+#      - name: Release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: ./artifacts/*.tar.gz
