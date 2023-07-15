@@ -68,12 +68,11 @@ fn main() -> io::Result<()> {
        }
    }
     let path = env::current_dir()?;
-        println!("The current directory is {}", path.display());
+        //println!("The current directory is {}", path.display());
         //Ok(());
-    let message: Option<&'static str> = Some("+++MELON MELON MELON+++");
     let mut opts = gitminer::Options{
         threads: count.try_into().unwrap(),
-        target:  "00000".to_string(),
+        target:  "00000".to_string(),//default 00000
         //gnostr:##:nonce
         //part of the gnostr protocol
         //src/worker.rs adds the nonce
