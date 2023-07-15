@@ -70,6 +70,7 @@ fn main() -> io::Result<()> {
     let path = env::current_dir()?;
         println!("The current directory is {}", path.display());
         //Ok(());
+    let message: Option<&'static str> = Some("+++MELON MELON MELON+++");
     let mut opts = gitminer::Options{
         threads: count.try_into().unwrap(),
         target:  "00000".to_string(),
