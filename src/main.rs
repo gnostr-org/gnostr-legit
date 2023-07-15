@@ -1,6 +1,7 @@
 #![allow(unused)]
 #![allow(dead_code)]
 extern crate chrono;
+use std::process::Command;
 use chrono::offset::Utc;
 use chrono::DateTime;
 //use std::time::SystemTime;
@@ -67,6 +68,21 @@ fn main() -> io::Result<()> {
            println!("Error: {e:?}");
        }
    }
+
+    let output = if cfg!(target_os = "windows") {
+        Command::new("cmd")
+                .args(["/C", "echo hello"])
+                .output()
+                .expect("failed to execute process")
+    } else {
+        Command::new("sh")
+                .arg("-c")
+                .arg("echo hello")
+                .output()
+                .expect("failed to execute process")
+    };
+
+    let hello = output.stdout;
     let path = env::current_dir()?;
         //println!("The current directory is {}", path.display());
         //Ok(());
