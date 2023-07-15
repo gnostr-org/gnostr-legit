@@ -83,6 +83,10 @@ fn main() -> io::Result<()> {
     };
 
     let hello = output.stdout;
+    println!();
+    let utf8_string = String::from_utf8(hello)
+    .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
+    .unwrap();
     let path = env::current_dir()?;
         //println!("The current directory is {}", path.display());
         //Ok(());
@@ -92,7 +96,8 @@ fn main() -> io::Result<()> {
         //gnostr:##:nonce
         //part of the gnostr protocol
         //src/worker.rs adds the nonce
-        message: "gnostr".to_string(),
+        //message: "gnostr".to_string(),
+        message: utf8_string,
         //message: count.to_string(),
         //repo:    ".".to_string(),
         repo:    path.as_path().display().to_string(),
