@@ -77,14 +77,15 @@ fn main() -> io::Result<()> {
     } else {
         Command::new("sh")
                 .arg("-c")
-                .arg("echo hello")
+                .arg("git status")
                 .output()
                 .expect("failed to execute process")
     };
 
-    let hello = output.stdout;
-    println!();
-    let utf8_string = String::from_utf8(hello)
+    //let hello = output.stdout;
+    //println!();
+    //let utf8_string = String::from_utf8(hello)
+    let utf8_string = String::from_utf8(output.stdout)
     .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
     .unwrap();
     let path = env::current_dir()?;
