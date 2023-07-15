@@ -72,7 +72,7 @@ fn main() -> io::Result<()> {
         //Ok(());
     let mut opts = gitminer::Options{
         threads: count.try_into().unwrap(),
-        target:  "gnostr".to_string(),
+        target:  "00000".to_string(),
         //gnostr:##:nonce
         //part of the gnostr protocol
         //src/worker.rs adds the nonce
