@@ -4,6 +4,8 @@ extern crate chrono;
 use chrono::offset::Utc;
 use chrono::DateTime;
 //use std::time::SystemTime;
+use std::io::{Result};
+use std::env;
 use std::time::{Duration, SystemTime};
 use std::thread::sleep;
 use std::convert::TryInto;
@@ -29,6 +31,10 @@ fn type_of<T>(_: T) -> &'static str {
 //    } else {
 //        Some(v as i8)
 //    }
+//}
+
+//fn get_current_working_dir() -> std::io::Result<PathBuf> {
+//    env::current_dir()
 //}
 
 fn main() -> io::Result<()> {
@@ -61,7 +67,9 @@ fn main() -> io::Result<()> {
            println!("Error: {e:?}");
        }
    }
-
+    let path = env::current_dir()?;
+        println!("The current directory is {}", path.display());
+        //Ok(());
     let mut opts = gitminer::Options{
         threads: count.try_into().unwrap(),
         target:  "gnostr".to_string(),
@@ -70,7 +78,8 @@ fn main() -> io::Result<()> {
         //src/worker.rs adds the nonce
         message: "gnostr".to_string(),
         //message: count.to_string(),
-        repo:    ".".to_string(),
+        //repo:    ".".to_string(),
+        repo:    path.as_path().display().to_string(),
         timestamp: time::now(),
             //.duration_since(SystemTime::UNIX_EPOCH)
     };
