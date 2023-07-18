@@ -65,7 +65,7 @@ fn main() -> io::Result<()> {
         .expect("Failed to write .gnostr");
     let git_add_gnostr = Command::new("sh")
         .arg("-c")
-        .arg(format!("cd {} && gnostr-git add -f .gnostr/*", repo_root))
+        .arg(format!("cd {} && gnostr-git add -f .gnostr/blobs", repo_root))
         .output()
         .ok()
         .expect("Failed to write .gnostr");

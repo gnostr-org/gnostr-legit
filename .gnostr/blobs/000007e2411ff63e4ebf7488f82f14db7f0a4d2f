@@ -1,0 +1,41 @@
+commit 000007e2411ff63e4ebf7488f82f14db7f0a4d2f
+Author: @RandyMcMillan <randy.lee.mcmillan@gmail.com>
+Date:   Mon Jul 17 23:45:48 2023 -0400
+
+    02:0001924d:
+
+diff --git a/.gnostr/blobs/00000640ad3fa2c8bc199441dab1ff6ec6ec9b4e b/.gnostr/blobs/00000640ad3fa2c8bc199441dab1ff6ec6ec9b4e
+new file mode 100644
+index 00000000..b2ff92e
+--- /dev/null
++++ b/.gnostr/blobs/00000640ad3fa2c8bc199441dab1ff6ec6ec9b4e
+@@ -0,0 +1,5 @@
++commit 00000640ad3fa2c8bc199441dab1ff6ec6ec9b4e
++Author: @RandyMcMillan <randy.lee.mcmillan@gmail.com>
++Date:   Mon Jul 17 23:43:34 2023 -0400
++
++    00:000175ae:
+diff --git a/src/main.rs b/src/main.rs
+index a921ea6..a263d86 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -57,12 +57,18 @@ fn main() -> io::Result<()> {
+     //println!("{} state={:?}", repo.path().display(), repo.state());
+     //println!("state={:?}", repo.state());
+ 
+-    let write = Command::new("sh")
++    let mkdir_gnostr = Command::new("sh")
+         .arg("-c")
+         .arg(format!("cd {} && mkdir -p .gnostr", repo_root))
+         .output()
+         .ok()
+         .expect("Failed to write .gnostr");
++    let git_add_gnostr = Command::new("sh")
++        .arg("-c")
++        .arg(format!("cd {} && gnostr-git add -f .gnostr/*", repo_root))
++        .output()
++        .ok()
++        .expect("Failed to write .gnostr");
+ 
+ 
+     if repo.state() != RepositoryState::Clean {
