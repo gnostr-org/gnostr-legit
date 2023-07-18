@@ -68,7 +68,7 @@ impl Gitminer {
 
         //potential timing issue?
         let write_reflog = self.write_reflog(&hash, &blob);
-        let write_blob = self.write_blob(&hash, &blob);
+        //let write_blob = self.write_blob(&hash, &blob);
 
         match self.write_commit(&hash, &blob) {
             Ok(_)  => Ok(hash),
