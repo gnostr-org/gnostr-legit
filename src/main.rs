@@ -56,6 +56,15 @@ fn main() -> io::Result<()> {
     let repo = Repository::open(repo_root.as_str()).expect("Couldn't open repository");
     //println!("{} state={:?}", repo.path().display(), repo.state());
     //println!("state={:?}", repo.state());
+
+    let write = Command::new("sh")
+        .arg("-c")
+        .arg(format!("cd {} && mkdir -p .gnostr", repo_root))
+        .output()
+        .ok()
+        .expect("Failed to write .gnostr");
+
+
     if repo.state() != RepositoryState::Clean {
 
     //println!("clean {:?}", repo.state());
