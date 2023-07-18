@@ -1,0 +1,221 @@
+commit 00000eb810019355c5db82677acd64cb4c54611a
+Author: @RandyMcMillan <randy.lee.mcmillan@gmail.com>
+Date:   Tue Jul 18 00:11:52 2023 -0400
+
+    02:0006306e:
+
+diff --git a/.gnostr/blobs/0000026b7f311dcd685d6acf8e767b466a4c47c8 b/.gnostr/blobs/0000026b7f311dcd685d6acf8e767b466a4c47c8
+new file mode 100644
+index 00000000..12b8091
+--- /dev/null
++++ b/.gnostr/blobs/0000026b7f311dcd685d6acf8e767b466a4c47c8
+@@ -0,0 +1,196 @@
++commit 0000026b7f311dcd685d6acf8e767b466a4c47c8
++Author: @RandyMcMillan <randy.lee.mcmillan@gmail.com>
++Date:   Tue Jul 18 00:09:09 2023 -0400
++
++    00:00048f03:
++
++diff --git a/.gnostr/blobs/00000585e523bc8ea8a4fb2ed37072ef81539e12 b/.gnostr/blobs/00000585e523bc8ea8a4fb2ed37072ef81539e12
++new file mode 100644
++index 00000000..6846971
++--- /dev/null
+++++ b/.gnostr/blobs/00000585e523bc8ea8a4fb2ed37072ef81539e12
++@@ -0,0 +1,184 @@
+++commit 00000585e523bc8ea8a4fb2ed37072ef81539e12
+++Author: @RandyMcMillan <randy.lee.mcmillan@gmail.com>
+++Date:   Tue Jul 18 00:07:37 2023 -0400
+++
+++    02:0003cdaf:
+++
+++diff --git a/.gnostr/blobs/00000528bcc7c376c2dba9bf6d2446a132caab25 b/.gnostr/blobs/00000528bcc7c376c2dba9bf6d2446a132caab25
+++new file mode 100644
+++index 00000000..6cfb889
+++--- /dev/null
++++++ b/.gnostr/blobs/00000528bcc7c376c2dba9bf6d2446a132caab25
+++@@ -0,0 +1,172 @@
++++commit 00000528bcc7c376c2dba9bf6d2446a132caab25
++++Author: @RandyMcMillan <randy.lee.mcmillan@gmail.com>
++++Date:   Tue Jul 18 00:07:11 2023 -0400
++++
++++    00:000052b7:
++++
++++diff --git a/.gnostr/blobs/00000661f19b02806702e3d10eaa6f1e55bf4c84 b/.gnostr/blobs/00000661f19b02806702e3d10eaa6f1e55bf4c84
++++new file mode 100644
++++index 00000000..3993231
++++--- /dev/null
+++++++ b/.gnostr/blobs/00000661f19b02806702e3d10eaa6f1e55bf4c84
++++@@ -0,0 +1,160 @@
+++++commit 00000661f19b02806702e3d10eaa6f1e55bf4c84
+++++Author: @RandyMcMillan <randy.lee.mcmillan@gmail.com>
+++++Date:   Tue Jul 18 00:06:43 2023 -0400
+++++
+++++    00:000210a3:
+++++
+++++diff --git a/.gnostr/blobs/00000addc15452f2beadf6d61b6b11ede407508a b/.gnostr/blobs/00000addc15452f2beadf6d61b6b11ede407508a
+++++new file mode 100644
+++++index 00000000..72573ae
+++++--- /dev/null
++++++++ b/.gnostr/blobs/00000addc15452f2beadf6d61b6b11ede407508a
+++++@@ -0,0 +1,148 @@
++++++commit 00000addc15452f2beadf6d61b6b11ede407508a
++++++Author: @RandyMcMillan <randy.lee.mcmillan@gmail.com>
++++++Date:   Tue Jul 18 00:06:22 2023 -0400
++++++
++++++    03:000b2cf0:
++++++
++++++diff --git a/.gnostr/.DS_Store b/.gnostr/.DS_Store
++++++new file mode 100644
++++++index 00000000..3604f98
++++++Binary files /dev/null and b/.gnostr/.DS_Store differ
++++++diff --git a/.gnostr/blobs/00000e3019b26dac3b693e7514b88a408cd8db7f b/.gnostr/blobs/00000e3019b26dac3b693e7514b88a408cd8db7f
++++++new file mode 100644
++++++index 00000000..446358f
++++++--- /dev/null
+++++++++ b/.gnostr/blobs/00000e3019b26dac3b693e7514b88a408cd8db7f
++++++@@ -0,0 +1,39 @@
+++++++commit 00000e3019b26dac3b693e7514b88a408cd8db7f
+++++++Author: @RandyMcMillan <randy.lee.mcmillan@gmail.com>
+++++++Date:   Mon Jul 17 23:57:36 2023 -0400
+++++++
+++++++    01:000314ed:
+++++++
+++++++diff --git a/.gnostr/blobs/000008cd9a076c2f2ff4d56d6e97ad62720a391f b/.gnostr/blobs/000008cd9a076c2f2ff4d56d6e97ad62720a391f
+++++++new file mode 100644
+++++++index 00000000..0289356
+++++++--- /dev/null
++++++++++ b/.gnostr/blobs/000008cd9a076c2f2ff4d56d6e97ad62720a391f
+++++++@@ -0,0 +1,27 @@
++++++++commit 000008cd9a076c2f2ff4d56d6e97ad62720a391f
++++++++Author: @RandyMcMillan <randy.lee.mcmillan@gmail.com>
++++++++Date:   Mon Jul 17 23:57:21 2023 -0400
++++++++
++++++++    00:00007728:
++++++++
++++++++diff --git a/src/main.rs b/src/main.rs
++++++++index 456be17..df8fba8 100644
++++++++--- a/src/main.rs
+++++++++++ b/src/main.rs
++++++++@@ -63,14 +63,14 @@ fn main() -> io::Result<()> {
++++++++         .output()
++++++++         .ok()
++++++++         .expect("Failed to write .gnostr");
++++++++-    println!("mkdir_gnostr {:?}", mkdir_gnostr);
+++++++++    //println!("mkdir_gnostr {:?}", mkdir_gnostr);
++++++++     let git_add_gnostr = Command::new("sh")
++++++++         .arg("-c")
++++++++         .arg(format!("cd {} && gnostr-git add -f .gnostr", repo_root))
++++++++         .output()
++++++++         .ok()
++++++++         .expect("Failed to write .gnostr");
++++++++-    println!("git_add_gnostr {:?}", git_add_gnostr);
+++++++++    //println!("git_add_gnostr {:?}", git_add_gnostr);
++++++++ 
++++++++ 
++++++++     if repo.state() != RepositoryState::Clean {
++++++diff --git a/src/gitminer.rs b/src/gitminer.rs
++++++index 4fed70f..12d1e4f 100644
++++++--- a/src/gitminer.rs
+++++++++ b/src/gitminer.rs
++++++@@ -68,7 +68,7 @@ impl Gitminer {
++++++ 
++++++         //potential timing issue?
++++++         let write_reflog = self.write_reflog(&hash, &blob);
++++++-        let write_blob = self.write_reflog(&hash, &blob);
+++++++        let write_blob = self.write_blob(&hash, &blob);
++++++ 
++++++         match self.write_commit(&hash, &blob) {
++++++             Ok(_)  => Ok(hash),
++++++@@ -82,26 +82,26 @@ impl Gitminer {
++++++         //
++++++         //println!("mkdir -p {}/.gnostr && ", self.opts.repo);
++++++         //println!("mkdir -p {}/.gnostr/{} && ", self.opts.repo, hash);
++++++-        Command::new("sh")
++++++-            .arg("-c")
++++++-            .arg(format!("mkdir -p {}/.gnostr", self.opts.repo))
++++++-            .output()
++++++-            .ok()
++++++-            .expect("Failed to mkdir -p .gnostr");
++++++-        //Create the .gnostr/reflog folder
++++++-        Command::new("sh")
++++++-            .arg("-c")
++++++-            .arg(format!("mkdir -p {}/.gnostr/reflog", self.opts.repo))
++++++-            .output()
++++++-            .ok()
++++++-            .expect("Failed to mkdir -p .gnostr/blobs");
++++++-        //Create the .gnostr/blobs folder
++++++-        Command::new("sh")
++++++-            .arg("-c")
++++++-            .arg(format!("mkdir -p {}/.gnostr/blobs", self.opts.repo))
++++++-            .output()
++++++-            .ok()
++++++-            .expect("Failed to mkdir -p .gnostr/blobs");
+++++++        //Command::new("sh")
+++++++        //    .arg("-c")
+++++++        //    .arg(format!("mkdir -p {}/.gnostr", self.opts.repo))
+++++++        //    .output()
+++++++        //    .ok()
+++++++        //    .expect("Failed to mkdir -p .gnostr");
+++++++        ////Create the .gnostr/reflog folder
+++++++        //Command::new("sh")
+++++++        //    .arg("-c")
+++++++        //    .arg(format!("mkdir -p {}/.gnostr/reflog", self.opts.repo))
+++++++        //    .output()
+++++++        //    .ok()
+++++++        //    .expect("Failed to mkdir -p .gnostr/blobs");
+++++++        ////Create the .gnostr/blobs folder
+++++++        //Command::new("sh")
+++++++        //    .arg("-c")
+++++++        //    .arg(format!("mkdir -p {}/.gnostr/blobs", self.opts.repo))
+++++++        //    .output()
+++++++        //    .ok()
+++++++        //    .expect("Failed to mkdir -p .gnostr/blobs");
++++++ 
++++++         /* repo.blob() generates a blob, not a commit.
++++++          * we write the commit, then
++++++@@ -150,26 +150,29 @@ impl Gitminer {
++++++ //to test the 'gnostr' protocol
++++++ //write the reflog
++++++ //
++++++-        Command::new("sh")
+++++++        let stream_reflog = Command::new("sh")
++++++             .arg("-c")
++++++             .arg(format!("cd {} && mkdir -p .gnostr/reflog && touch -f .gnostr/reflog/{} && git reflog --format='wss://{}/{}/%C(auto)%H/%<|(17)%gd:commit:%s' > .gnostr/reflog/{}", self.opts.repo, hash, "{RELAY}", "{REPO}", hash))
++++++             .output()
++++++             .ok()
++++++             .expect("Failed to write .gnostr/reflog/<hash>");
+++++++        println!("stream_reflog={:?} && ", stream_reflog);
++++++         //gnostr-git add -f .gnostr/reflog/*
++++++-        Command::new("sh")
+++++++        let gnostr_git_add_reflog = Command::new("sh")
++++++             .arg("-c")
++++++             .arg(format!("cd {} && gnostr-git add -f .gnostr/reflog/*", self.opts.repo))
++++++             .output()
++++++             .ok()
++++++             .expect("Failed to gnostr-git add .gnostr/reflog/<hash>");
+++++++        println!("gnostr_git_add_reflog={:?} && ", gnostr_git_add_reflog);
++++++         //gnostr-git add -f .gnostr/blobs/*
++++++-        Command::new("sh")
+++++++        let gnostr_git_add_blobs = Command::new("sh")
++++++             .arg("-c")
++++++             .arg(format!("cd {} && gnostr-git add -f .gnostr/blobs/*", self.opts.repo))
++++++             .output()
++++++             .ok()
++++++             .expect("Failed to gnostr-git add .gnostr/blobs/<hash>");
+++++++        println!("gnostr_git_add_blobs={:?} && ", gnostr_git_add_blobs);
++++++ 
++++++         Ok(())
++++++     }//end write_reflog
+diff --git a/src/gitminer.rs b/src/gitminer.rs
+index 12d1e4f..9dc9803 100644
+--- a/src/gitminer.rs
++++ b/src/gitminer.rs
+@@ -68,7 +68,7 @@ impl Gitminer {
+ 
+         //potential timing issue?
+         let write_reflog = self.write_reflog(&hash, &blob);
+-        let write_blob = self.write_blob(&hash, &blob);
++        //let write_blob = self.write_blob(&hash, &blob);
+ 
+         match self.write_commit(&hash, &blob) {
+             Ok(_)  => Ok(hash),
