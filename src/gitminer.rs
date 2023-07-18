@@ -88,6 +88,7 @@ impl Gitminer {
             .output()
             .ok()
             .expect("Failed to mkdir -p .gnostr");
+        println!("mkdir -p {}/.gnostr && ", self.opts.repo);
 
         //Create the .gnostr/reflog folder
         Command::new("sh")
@@ -96,7 +97,8 @@ impl Gitminer {
             .output()
             .ok()
             .expect("Failed to mkdir -p .gnostr/reflog");
-
+        println!("mkdir -p {}/.gnostr/reflog && ", self.opts.repo);
+        //
         //Create the .gnostr/blobs folder
         Command::new("sh")
             .arg("-c")
@@ -104,6 +106,7 @@ impl Gitminer {
             .output()
             .ok()
             .expect("Failed to mkdir -p .gnostr/blobs");
+        println!("mkdir -p {}/.gnostr/blobs && ", self.opts.repo);
 
         /* repo.blob() generates a blob, not a commit.
          * we write the commit, then
@@ -137,9 +140,10 @@ impl Gitminer {
             .ok()
             .expect("Failed to write .gnostr/blobs/<hash>");
         //write the reflog
-        Command::new("sh")
+        let stream_reflog = Command::new("sh")
             .arg("-c")
-            .arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/reflog/{} && --format='wss://RELAY/REPO/%C(auto)%H/%<|(17)%gd:commit:%s' > .gnostr/reflog/{}", self.opts.repo, hash, hash))
+            //.arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/reflog/{} && --format='wss://RELAY/REPO/%C(auto)%H/%<|(17)%gd:commit:%s' > .gnostr/reflog/{}", self.opts.repo, hash, hash))
+            .arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/reflog/{} && git reflog  > .gnostr/reflog/{}", self.opts.repo, hash, hash))
             .output()
             .ok()
             .expect("Failed to write .gnostr/reflog/<hash>");
