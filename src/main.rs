@@ -57,9 +57,15 @@ fn main() -> io::Result<()> {
     //println!("{} state={:?}", repo.path().display(), repo.state());
     //println!("state={:?}", repo.state());
 
-    let write = Command::new("sh")
+    let mkdir_gnostr = Command::new("sh")
         .arg("-c")
         .arg(format!("cd {} && mkdir -p .gnostr", repo_root))
+        .output()
+        .ok()
+        .expect("Failed to write .gnostr");
+    let git_add_gnostr = Command::new("sh")
+        .arg("-c")
+        .arg(format!("cd {} && gnostr-git add -f .gnostr/*", repo_root))
         .output()
         .ok()
         .expect("Failed to write .gnostr");
