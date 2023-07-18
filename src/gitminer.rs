@@ -88,13 +88,15 @@ impl Gitminer {
             .output()
             .ok()
             .expect("Failed to mkdir -p .gnostr");
+
         //Create the .gnostr/reflog folder
         Command::new("sh")
             .arg("-c")
             .arg(format!("mkdir -p {}/.gnostr/reflog", self.opts.repo))
             .output()
             .ok()
-            .expect("Failed to mkdir -p .gnostr/blobs");
+            .expect("Failed to mkdir -p .gnostr/reflog");
+
         //Create the .gnostr/blobs folder
         Command::new("sh")
             .arg("-c")
@@ -134,6 +136,13 @@ impl Gitminer {
             .output()
             .ok()
             .expect("Failed to write .gnostr/blobs/<hash>");
+        //write the reflog
+        Command::new("sh")
+            .arg("-c")
+            .arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/reflog/{} && --format='wss://RELAY/REPO/%C(auto)%H/%<|(17)%gd:commit:%s' > .gnostr/reflog/{}", self.opts.repo, hash, hash))
+            .output()
+            .ok()
+            .expect("Failed to write .gnostr/reflog/<hash>");
 
         Ok(())
     }//end write_commit
@@ -142,6 +151,7 @@ impl Gitminer {
 
 //REF:
 //gnostr-git reflog --format='wss://{RELAY}/{REPO}/%C(auto)%H/%<|(17)%gd:commit:%s'
+//--format='wss://{RELAY}/{REPO}/%C(auto)%H/%<|(17)%gd:commit:%s'
 //gnostr-git-reflog -f
 //write the reflog
 //the new reflog is associated with a commit
