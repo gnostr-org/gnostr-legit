@@ -135,5 +135,5 @@ $CARGO build --release
 #sudo install -v ././target/release/legit /usr/local/bin/legit
 $CARGO install --path .
 $CARGO run
-$CARGO run . -p b -m ""
-legit -h
+$CARGO run . -p 00000 -m "gnostr-legit: automate"
+gnostr-legit -h
