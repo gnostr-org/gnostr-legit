@@ -12,17 +12,23 @@ pub struct Worker {
     parent:  String,
     author:  String,
     message: String,
-    timestamp: time::Tm
+    timestamp: time::Tm,
+    weeble: String,
+    wobble: String,
+    blockheight: String
 }
 
 impl Worker {
-    pub fn new(id:        u32,
-               target:    String,
-               tree:      String,
-               parent:    String,
-               author:    String,
-               message:   String,
-               timestamp: time::Tm,
+    pub fn new(id:          u32,
+               target:      String,
+               tree:        String,
+               parent:      String,
+               author:      String,
+               message:     String,
+               timestamp:   time::Tm,
+               weeble:      String,
+               wobble:      String,
+               blockheight: String,
                tx:        mpsc::Sender<(u32, String, String)>) -> Worker {
         Worker {
             id:        id,
@@ -33,7 +39,10 @@ impl Worker {
             parent:    parent,
             author:    author,
             message:   message,
-            timestamp: timestamp
+            timestamp: timestamp,
+            weeble:    weeble,
+            wobble:    wobble,
+            blockheight: blockheight
         }
     }
 
@@ -59,11 +68,14 @@ impl Worker {
                            parent {}\n\
                            author {} {}\n\
                            committer {} {}\n\n\
-                           {:02}/{:08x}:{}",
+                          {:04}/{:06}/{:06}/{:02}\n/{:08x}\n:{}",
                           self.tree,
                           self.parent,
                           self.author, tstamp,
                           self.author, tstamp,
+                          self.weeble,
+                          self.wobble,
+                          self.blockheight,
                           self.id,
                           value,
                           self.message);

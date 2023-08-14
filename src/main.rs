@@ -210,6 +210,70 @@ fn main() -> io::Result<()> {
    //    }
    //}
 
+    let gnostr_weeble =
+        if cfg!(target_os = "windows") {
+        Command::new("cmd")
+                .args(["/C", "gnostr-weeble"])
+                .output()
+                .expect("failed to execute process")
+        } else
+        if cfg!(target_os = "macos"){
+        Command::new("sh")
+                .arg("-c")
+                .arg("gnostr-weeble")
+                .output()
+                .expect("failed to execute process")
+        } else
+        if cfg!(target_os = "linux"){
+        Command::new("sh")
+                .arg("-c")
+                .arg("gnostr-weeble")
+                .output()
+                .expect("failed to execute process")
+        } else {
+        Command::new("sh")
+                .arg("-c")
+                .arg("gnostr-weeble")
+                .output()
+                .expect("failed to execute process")
+        };
+    let weeble = String::from_utf8(gnostr_weeble.stdout)
+    .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
+    .unwrap();
+    println!("weeble={}", weeble);
+
+    let gnostr_wobble =
+        if cfg!(target_os = "windows") {
+        Command::new("cmd")
+                .args(["/C", "gnostr-wobble"])
+                .output()
+                .expect("failed to execute process")
+        } else
+        if cfg!(target_os = "macos"){
+        Command::new("sh")
+                .arg("-c")
+                .arg("gnostr-wobble")
+                .output()
+                .expect("failed to execute process")
+        } else
+        if cfg!(target_os = "linux"){
+        Command::new("sh")
+                .arg("-c")
+                .arg("gnostr-wobble")
+                .output()
+                .expect("failed to execute process")
+        } else {
+        Command::new("sh")
+                .arg("-c")
+                .arg("gnostr-wobble")
+                .output()
+                .expect("failed to execute process")
+        };
+
+    let wobble = String::from_utf8(gnostr_wobble.stdout)
+    .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
+    .unwrap();
+    println!("wobble={}", wobble);
 
     let gnostr_blockheight =
         if cfg!(target_os = "windows") {
@@ -258,6 +322,9 @@ fn main() -> io::Result<()> {
         //repo:    ".".to_string(),
         repo:    path.as_path().display().to_string(),
         timestamp: time::now(),
+        weeble: weeble,
+        wobble: wobble,
+        blockheight: blockheight,
             //.duration_since(SystemTime::UNIX_EPOCH)
     };
 
