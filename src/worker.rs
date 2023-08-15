@@ -73,9 +73,9 @@ impl Worker {
                           self.parent,
                           self.author, tstamp,
                           self.author, tstamp,
-                          self.weeble,
-                          self.wobble,
-                          self.blockheight,
+                          self.weeble.trim(),
+                          self.wobble.trim(),
+                          self.blockheight.trim(),
                           self.id,
                           value,
                           self.message);
