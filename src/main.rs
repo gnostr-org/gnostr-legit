@@ -89,12 +89,12 @@ fn main() -> io::Result<()> {
     let cwd = get_current_working_dir();
     #[cfg(debug_assertions)]
         //println!("Debugging enabled");
-    //println!("{:#?}", cwd);
+    println!("{:#?}", cwd);
     let state = repo::state();
     //println!("{:#?}", state);
     //
     let repo_root = std::env::args().nth(1).unwrap_or(".".to_string());
-    //println!("repo_root={:?}", repo_root.as_str());
+    println!("repo_root={:?}", repo_root.as_str());
     let repo = Repository::open(repo_root.as_str()).expect("Couldn't open repository");
     //println!("{} state={:?}", repo.path().display(), repo.state());
     //println!("state={:?}", repo.state());
@@ -210,6 +210,38 @@ fn main() -> io::Result<()> {
    //    }
    //}
 
+    let pwd =
+        if cfg!(target_os = "windows") {
+        Command::new("cmd")
+                .args(["/C", "echo %cd%"])
+                .output()
+                .expect("failed to execute process")
+        } else
+        if cfg!(target_os = "macos"){
+        Command::new("sh")
+                .arg("-c")
+                .arg("echo ${PWD##*/}")
+                .output()
+                .expect("failed to execute process")
+        } else
+        if cfg!(target_os = "linux"){
+        Command::new("sh")
+                .arg("-c")
+                .arg("echo ${PWD##*/}")
+                .output()
+                .expect("failed to execute process")
+        } else {
+        Command::new("sh")
+                .arg("-c")
+                .arg("echo ${PWD##*/}")
+                .output()
+                .expect("failed to execute process")
+        };
+    let pwd = String::from_utf8(pwd.stdout)
+    .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
+    .unwrap();
+    //println!("pwd={}", pwd);
+
     let gnostr_weeble =
         if cfg!(target_os = "windows") {
         Command::new("cmd")
@@ -316,7 +348,7 @@ fn main() -> io::Result<()> {
         //gnostr:##:nonce
         //part of the gnostr protocol
         //src/worker.rs adds the nonce
-        message: "gnostr".to_string(),
+        message: pwd,
         //message: message,
         //message: count.to_string(),
         //repo:    ".".to_string(),
@@ -411,6 +443,16 @@ fn main() -> io::Result<()> {
     let gnostr_event = String::from_utf8(event.stdout)
     .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
     .unwrap();
+
+
+
+
+
+
+
+
+
+
 
     //assert...
     //echo gnostr|openssl dgst -sha256 | sed 's/SHA2-256(stdin)= //g'
