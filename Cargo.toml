@@ -1,9 +1,8 @@
 [package]
 name    = "gnostr-legit"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["@RandyMcMillan <randy.lee.mcmillan@gmail.com>", "John <john@throttle.io>"]
-edition = "2021"
-rust-version = "1.72.0"
+edition = "2018"
 description = "gnostr blob manager and pow miner"
 documentation = "https://legit.gnostr.org"
 readme = "README.md"
@@ -12,7 +11,6 @@ repository = "https://github.com/gnostr-org/gnostr-legit.git"
 license = "MIT OR Apache-2.0"
 keywords = ["git", "pow", "proof-of-work", "gnostr", "nostr"]
 categories = ["command-line-utilities"]
-
 
 [dependencies]
 rust-crypto = "0.2.36"

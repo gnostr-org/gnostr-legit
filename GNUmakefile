@@ -267,7 +267,7 @@ docs: touch-time git-add## 	docs
 
 .PHONY: legit
 .ONESHELL:
-install:legit-install
+install:cargo-install
 legit:## 	legit
 	@$(MAKE) -f legit.mk
 tag:
