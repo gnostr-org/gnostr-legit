@@ -13,11 +13,11 @@ keywords = ["git", "pow", "proof-of-work", "gnostr", "nostr"]
 categories = ["command-line-utilities"]
 
 [dependencies]
-rust-crypto = "0.2.36"
-git2        = "^0.17"
 argparse    = "0.2.2"
-time        = "0.1.42"
 chrono      = "0"
-sha2 = "0.10.7"
+git2        = "^0.17"
 pad = "0.1.6"
+rust-crypto = "0.2.36"
+sha2 = "0.10.7"
+time        = "0.1.42"
 #crypto      = "0.4.0"
