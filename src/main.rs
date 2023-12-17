@@ -61,7 +61,7 @@ fn example() {
 }
 
 fn main() -> io::Result<()> {
-  #[allow(clippy::if_same_then_else)]
+	#[allow(clippy::if_same_then_else)]
 	if cfg!(debug_assertions) {
 		//println!("Debugging enabled");
 	} else {
@@ -99,7 +99,7 @@ fn main() -> io::Result<()> {
 	//println!("state={:?}", repo.state());
 
 	//println!("clean {:?}", repo.state());
-  #[allow(clippy::if_same_then_else)]
+	#[allow(clippy::if_same_then_else)]
 	let repo_path = if cfg!(target_os = "windows") {
 		Command::new("cmd")
 			.args(["/C", "cd"])
@@ -149,7 +149,7 @@ fn main() -> io::Result<()> {
 
 	//#!/bin/bash
 	//gnostr-git config --global --replace-all gnostr.relays "$(gnostr-get-relays)" #&& git config -l | grep gnostr.relays
-  #[allow(clippy::if_same_then_else)]
+	#[allow(clippy::if_same_then_else)]
 	let set_relays = if cfg!(target_os = "windows") {
 		Command::new("cmd")
 			.args(["/C", "gnostr-set-relays"])
@@ -206,7 +206,7 @@ fn main() -> io::Result<()> {
 	//    }
 	//}
 
-  #[allow(clippy::if_same_then_else)]
+	#[allow(clippy::if_same_then_else)]
 	let pwd = if cfg!(target_os = "windows") {
 		Command::new("cmd")
 			.args(["/C", "echo %cd%"])
@@ -239,7 +239,7 @@ fn main() -> io::Result<()> {
 		.unwrap();
 	//println!("pwd={}", pwd);
 
-  #[allow(clippy::if_same_then_else)]
+	#[allow(clippy::if_same_then_else)]
 	let gnostr_weeble = if cfg!(target_os = "windows") {
 		Command::new("cmd")
 			.args(["/C", "gnostr-weeble || echo weeble"])
@@ -275,7 +275,7 @@ fn main() -> io::Result<()> {
 	//
 	//println!("weeble={}", weeble);
 
-  #[allow(clippy::if_same_then_else)]
+	#[allow(clippy::if_same_then_else)]
 	let gnostr_wobble = if cfg!(target_os = "windows") {
 		Command::new("cmd")
 			.args(["/C", "gnostr-wobble"])
@@ -307,7 +307,7 @@ fn main() -> io::Result<()> {
 		})
 		.unwrap();
 	//println!("wobble={}", wobble);
-  #[allow(clippy::if_same_then_else)]
+	#[allow(clippy::if_same_then_else)]
 	let gnostr_blockheight = if cfg!(target_os = "windows") {
 		Command::new("cmd")
 			.args(["/C", "gnostr-blockheight"])
@@ -421,7 +421,7 @@ fn main() -> io::Result<()> {
 		.unwrap();
 	//shell test
 	//git rev-parse --verify HEAD
-  #[allow(clippy::if_same_then_else)]
+	#[allow(clippy::if_same_then_else)]
 	let event = if cfg!(target_os = "windows") {
 		Command::new("cmd")
                 .args(["/C", "gnostr --sec $(gnostr-sha256 0) --tag weeble $(gnostr-weeble || echo weeble) --tag wobble $(gnostr-wobble || echo wobble) --tag blockheight $(gnostr-blockheight || echo blockheight) --envelope --content \"$(gnostr-git diff HEAD~1 || gnostr-git diff)\" "])
