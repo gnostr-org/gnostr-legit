@@ -1,6 +1,6 @@
 [package]
 name    = "gnostr-legit"
-version = "0.0.4"
+version = "0.0.5"
 authors = ["@RandyMcMillan <randy.lee.mcmillan@gmail.com>", "John <john@throttle.io>"]
 edition = "2018"
 description = "gnostr blob manager and pow miner"
@@ -21,3 +21,6 @@ rust-crypto = "0.2.36"
 sha2 = "0.10.7"
 time        = "0.1.42"
 #crypto      = "0.4.0"
+
+
+[workspace]
