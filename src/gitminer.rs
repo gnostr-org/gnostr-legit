@@ -39,10 +39,10 @@ impl Gitminer {
 		let relays = Gitminer::load_gnostr_relays(&repo)?;
 
 		Ok(Gitminer {
-			opts: opts,
-			repo: repo,
-			author: author,
-			relays: relays,
+			opts,
+			repo,
+			author,
+			relays,
 		})
 	}
 
@@ -62,7 +62,7 @@ impl Gitminer {
 			let author = self.author.clone();
 			let msg = self.opts.message.clone();
 			let wtx = tx.clone();
-			let ts = self.opts.timestamp.clone();
+			let ts = self.opts.timestamp;
 			let weeble = self.opts.weeble.clone();
 			let wobble = self.opts.wobble.clone();
 			let bh = self.opts.blockheight.clone();
@@ -96,9 +96,9 @@ impl Gitminer {
 				"mkdir -p {}.gnostr/{} && ",
 				self.opts.repo, hash
 			))
-			.output()
-			.ok()
-			.expect("Failed to generate commit");
+			.output();
+			//.ok()
+			//.expect("Failed to generate commit");
 
 		/* repo.blob() generates a blob, not a commit.
 		 * we write the commit, then
@@ -123,17 +123,17 @@ impl Gitminer {
 		Command::new("sh")
             .arg("-c")
             .arg(format!("cd {} && gnostr-git hash-object -t commit -w --stdin < {} && gnostr-git reset --hard {}", self.opts.repo, tmpfile, hash))
-            .output()
-            .ok()
-            .expect("Failed to generate commit");
+            .output();
+            //.ok()
+            //.expect("Failed to generate commit");
 
 		//write the blob
 		Command::new("sh")
             .arg("-c")
             .arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/blobs/{} && git show {} > .gnostr/blobs/{}", self.opts.repo, hash, hash, hash))
-            .output()
-            .ok()
-            .expect("Failed to write .gnostr/blobs/<hash>");
+            .output();
+            //.ok()
+            //.expect("Failed to write .gnostr/blobs/<hash>");
 
 		//REF:
 		//gnostr-git reflog --format='wss://{RELAY}/{REPO}/%C(auto)%H/%<|(17)%gd:commit:%s'
@@ -154,15 +154,15 @@ impl Gitminer {
 		Command::new("sh")
             .arg("-c")
             .arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/reflog && gnostr-git reflog --format='wss://{}/{}/%C(auto)%H/%<|(17)%gd:commit:%s' > .gnostr/reflog", self.opts.repo, "{RELAY}", "{REPO}"))
-            .output()
-            .ok()
-            .expect("Failed to write .gnostr/reflog");
+            .output();
+            //.ok()
+            //.expect("Failed to write .gnostr/reflog");
 		Command::new("sh")
             .arg("-c")
             .arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/reflog && gnostr-git update-index --assume-unchaged .gnostr/reflog", self.opts.repo))
-            .output()
-            .ok()
-            .expect("Failed to write .gnostr/reflog");
+            .output();
+            //.ok()
+            //.expect("Failed to write .gnostr/reflog");
 		Ok(())
 	}
 
@@ -214,6 +214,7 @@ impl Gitminer {
 			}
 		};
 
+#[allow(clippy::useless_format)]
 		Ok(format!("{}", relays))
 	}
 

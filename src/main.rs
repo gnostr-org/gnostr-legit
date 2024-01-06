@@ -271,7 +271,7 @@ fn main() -> io::Result<()> {
 		})
 		.unwrap();
 
-	//assert_eq!(weeble.is_empty(), true); // a)
+	//assert_eq!(weeble.is_empty(), false); // a)
 	//
 	//println!("weeble={}", weeble);
 
@@ -308,36 +308,40 @@ fn main() -> io::Result<()> {
 		.unwrap();
 	//println!("wobble={}", wobble);
 	#[allow(clippy::if_same_then_else)]
-	let gnostr_blockheight = if cfg!(target_os = "windows") {
-		Command::new("cmd")
-			.args(["/C", "gnostr-blockheight"])
-			.output()
-			.expect("failed to execute process")
-	} else if cfg!(target_os = "macos") {
+	let which_bitcoin_cli =
 		Command::new("sh")
 			.arg("-c")
-			.arg("gnostr-blockheight || echo blockheight")
+			.arg("which bitcoin-cli || echo")
 			.output()
-			.expect("failed to execute process")
-	} else if cfg!(target_os = "linux") {
-		Command::new("sh")
-			.arg("-c")
-			.arg("gnostr-blockheight || echo blockheight")
-			.output()
-			.expect("failed to execute process")
-	} else {
-		Command::new("sh")
-			.arg("-c")
-			.arg("gnostr-blockheight || echo blockheight")
-			.output()
-			.expect("failed to execute process")
-	};
+			.expect("failed to execute process");
 
-	let blockheight = String::from_utf8(gnostr_blockheight.stdout)
+	let bitcoin_cli = String::from_utf8(which_bitcoin_cli.stdout)
 		.map_err(|non_utf8| {
 			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
 		})
 		.unwrap();
+
+#[allow(clippy::if_same_then_else)]
+    if (bitcoin_cli.len() > 1) {
+
+	  //println!("bitcoin-cli={}", bitcoin_cli);
+	  //println!("bitcoin-cli.len()={}", bitcoin_cli.len());
+	  //println!("> 1, The length of {} is {}", bitcoin_cli, bitcoin_cli.len());
+
+    }
+
+    let gnostr_blockheight =
+      Command::new("sh")
+      .arg("-c")
+      .arg("curl https://blockchain.info/q/getblockcount || echo blockheight")
+      .output()
+      .expect("failed to execute process");
+    let blockheight = String::from_utf8(gnostr_blockheight.stdout)
+      .map_err(|non_utf8| {
+        String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
+      })
+    .unwrap();
+
 	//println!("blockheight={}", blockheight);
 
 	let path = env::current_dir()?;
@@ -356,9 +360,9 @@ fn main() -> io::Result<()> {
 		//repo:    ".".to_string(),
 		repo: path.as_path().display().to_string(),
 		timestamp: time::now(),
-		weeble: weeble,
-		wobble: wobble,
-		blockheight: blockheight,
+		weeble,
+		wobble,
+		blockheight,
 		//.duration_since(SystemTime::UNIX_EPOCH)
 	};
 

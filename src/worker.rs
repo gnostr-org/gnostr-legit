@@ -1,7 +1,7 @@
 use crypto::digest::Digest;
 use crypto::sha1;
 use std::sync::mpsc;
-use time;
+//use time;
 
 pub struct Worker {
 	id: u32,
@@ -33,18 +33,18 @@ impl Worker {
 		tx: mpsc::Sender<(u32, String, String)>,
 	) -> Worker {
 		Worker {
-			id: id,
+			id,
 			digest: sha1::Sha1::new(),
-			tx: tx,
-			target: target,
-			tree: tree,
-			parent: parent,
-			author: author,
-			message: message,
-			timestamp: timestamp,
-			weeble: weeble,
-			wobble: wobble,
-			blockheight: blockheight,
+			tx,
+			target,
+			tree,
+			parent,
+			author,
+			message,
+			timestamp,
+			weeble,
+			wobble,
+			blockheight,
 		}
 	}
 
@@ -73,16 +73,14 @@ impl Worker {
 	) -> (String, String) {
 		let raw = format!(
 			"tree {}\n\
-                           parent {}\n\
-                           author {} {}\n\
-                           committer {} {}\n\n\
-                          {:04}/{:06}/{:06}/{:02}/{:08x}/{}",
+			parent {}\n\
+			author {} {}\n\
+			committer {} {}\n\n\
+			{:04}/{:06}/{:06}/{:02}/{:08x}/{}",
 			self.tree,
 			self.parent,
-			self.author,
-			tstamp,
-			self.author,
-			tstamp,
+			self.author, tstamp,
+			self.author, tstamp,
 			self.weeble.trim(),
 			self.wobble.trim(),
 			self.blockheight.trim(),
