@@ -389,15 +389,15 @@ fn main() -> io::Result<()> {
 	// Note that calling `finalize()` consumes hasher
 	//let gnostr_sec = hasher.finalize();
 	let gnostr_sec: String = format!("{:X}", hasher.finalize());
-	//println!("Binary hash: {:?}", hash);
-	//println!("hash before: {:?}", hash);
-	//println!("hash after pad: {:?}", hash);
-	//println!("&hash before: {:?}", &hash);
-	//println!("&hash after pad: {:?}", &hash);
-	//println!("gnostr_sec before pad: {:?}", gnostr_sec);
-	//println!("gnostr_sec after pad: {:?}", gnostr_sec.pad(64, '0', Alignment::Right, true));
-	//println!("&gnostr_sec before pad: {:?}", &gnostr_sec);
-	//println!("&gnostr_sec after pad: {:?}", &gnostr_sec.pad(64, '0', Alignment::Right, true));
+	println!("Binary hash: {:?}", hash);
+	println!("hash before: {:?}", hash);
+	println!("hash after pad: {:?}", hash);
+	println!("&hash before: {:?}", &hash);
+	println!("&hash after pad: {:?}", &hash);
+	println!("gnostr_sec before pad: {:?}", gnostr_sec);
+	println!("gnostr_sec after pad: {:?}", gnostr_sec.pad(64, '0', Alignment::Right, true));
+	println!("&gnostr_sec before pad: {:?}", &gnostr_sec);
+	println!("&gnostr_sec after pad: {:?}", &gnostr_sec.pad(64, '0', Alignment::Right, true));
 
 	//let s = "12345".pad(64, '0', Alignment::Right, true);
 	//println!("s: {:?}", s);
