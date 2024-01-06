@@ -399,6 +399,11 @@ fn main() -> io::Result<()> {
 	println!("&gnostr_sec before pad: {:?}", &gnostr_sec);
 	println!("&gnostr_sec after pad: {:?}", &gnostr_sec.pad(64, '0', Alignment::Right, true));
 
+//4b825dc642cb6eb9a060e54bf8d69288fbee4904
+
+	let git_empty_tree = "4b825dc642cb6eb9a060e54bf8d69288fbee4904".pad(64, '0', Alignment::Right, true);
+	println!("git_empty_tree: {:?}", git_empty_tree);
+
 	let s = "1".pad(64, '0', Alignment::Right, true);
 	println!("s: {:?}", s);
 
