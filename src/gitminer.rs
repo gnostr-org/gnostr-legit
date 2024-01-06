@@ -109,15 +109,9 @@ impl Gitminer {
 
 		let tmpfile = format!("/tmp/{}.tmp", hash);
 		let mut file =
-			File::create(&Path::new(&tmpfile)).ok().expect(&format!(
-				"Failed to create temporary file {}",
-				&tmpfile
-			));
+      File::create(&Path::new(&tmpfile)).ok().unwrap_or_else(|| panic!("Failed to create temporary file {}",&tmpfile));
 
-		file.write_all(blob.as_bytes()).ok().expect(&format!(
-			"Failed to write temporary file {}",
-			&tmpfile
-		));
+    file.write_all(blob.as_bytes()).ok().unwrap_or_else(|| panic!("Failed to write temporary file {}",&tmpfile));
 
 		//write the commit
 		Command::new("sh")
@@ -214,7 +208,7 @@ impl Gitminer {
 			}
 		};
 
-		Ok(format!("{}", relays))
+		Ok(format!("{}", relays.to_string()))
 	}
 
 	fn revparse_0(
