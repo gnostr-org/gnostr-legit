@@ -399,7 +399,7 @@ fn main() -> io::Result<()> {
 	println!("&gnostr_sec before pad: {:?}", &gnostr_sec);
 	println!("&gnostr_sec after pad: {:?}", &gnostr_sec.pad(64, '0', Alignment::Right, true));
 
-	let s = "".pad(64, '0', Alignment::Right, true);
+	let s = "1".pad(64, '0', Alignment::Right, true);
 	println!("s: {:?}", s);
 
 	// echo "000000b64a065760e5441bf47f0571cb690b28fc" | openssl dgst -sha256 | sed 's/SHA2-256(stdin)= //g'
