@@ -356,9 +356,9 @@ fn main() -> io::Result<()> {
 		//repo:    ".".to_string(),
 		repo: path.as_path().display().to_string(),
 		timestamp: time::now(),
-		weeble: weeble,
-		wobble: wobble,
-		blockheight: blockheight,
+		weeble,
+		wobble,
+		blockheight,
 		//.duration_since(SystemTime::UNIX_EPOCH)
 	};
 
