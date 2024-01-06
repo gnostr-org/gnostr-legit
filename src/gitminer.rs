@@ -226,7 +226,7 @@ impl Gitminer {
 		let head = repo.revparse_single("HEAD").unwrap();
 		let head_2 = format!("{}", head.id());
 
-		Ok((head_2))
+		Ok(head_2)
 	}
 	fn revparse_1(
 		repo: &mut git2::Repository,
@@ -236,7 +236,7 @@ impl Gitminer {
 		let head = repo.revparse_single("HEAD~1").unwrap();
 		let head_1 = format!("{}", head.id());
 
-		Ok((head_1))
+		Ok(head_1)
 	}
 	fn prepare_tree(
 		repo: &mut git2::Repository,
