@@ -404,13 +404,13 @@ fn main() -> io::Result<()> {
 
   //4b825dc642cb6eb9a060e54bf8d69288fbee4904
 	let git_empty_tree_sha1 = "4b825dc642cb6eb9a060e54bf8d69288fbee4904".pad(64, '0', Alignment::Right, true);
-	println!("git_empty_tree: {:?}", git_empty_tree_sha1);
+	println!("git_empty_tree_sha1: {:?}", git_empty_tree_sha1);
 
 
   //6ef19b41225c5369f1c104d45d8d85efa9b057b53b14b4b9b939dd74decc5321
 	let git_empty_tree_sha256 =
     "6ef19b41225c5369f1c104d45d8d85efa9b057b53b14b4b9b939dd74decc5321".pad(64, '0', Alignment::Right, true);
-	println!("git_empty_tree: {:?}", git_empty_tree_sha256);
+	println!("git_empty_tree_sha256: {:?}", git_empty_tree_sha256);
 
 
 	let s = "1".pad(64, '0', Alignment::Right, true);
