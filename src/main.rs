@@ -92,7 +92,7 @@ fn main() -> io::Result<()> {
 	//
 	let repo_root =
 		std::env::args().nth(1).unwrap_or(".".to_string());
-	println!("repo_root={:?}", repo_root.as_str());
+	//println!("repo_root={:?}", repo_root.as_str());
 	let repo = Repository::open(repo_root.as_str())
 		.expect("Couldn't open repository");
 	//println!("{} state={:?}", repo.path().display(), repo.state());
@@ -130,7 +130,7 @@ fn main() -> io::Result<()> {
 			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
 		})
 		.unwrap();
-	println!("path={:?}", path);
+	//println!("path={:?}", path);
 
 	//#!/bin/bash
 	//declare -a RELAYS
@@ -236,13 +236,12 @@ fn main() -> io::Result<()> {
 			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
 		})
 		.unwrap();
-	println!("pwd={}", pwd);
+	//println!("pwd={}", pwd);
 	let mut hasher = Sha256::new();
 	hasher.update(pwd.clone());
-	//let pwd_hash = hasher.finalize();
-	//println!("pwd_hash={:x}", pwd_hash);
-	let gnostr_sec: String = format!("{:X}", hasher.finalize());
-	println!("gnostr_sec={:?}", gnostr_sec);
+  //sha256sum <(echo gnostr-legit)
+	let pwd_hash: String = format!("{:x}", hasher.finalize());
+	//println!("pwd_hash={:?}", pwd_hash);
 
 	#[allow(clippy::if_same_then_else)]
 	let gnostr_weeble = if cfg!(target_os = "windows") {
