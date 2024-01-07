@@ -86,7 +86,7 @@ impl Worker {
 			parent {}\n\
 			author {} {}\n\
 			committer {} {}\n\n\
-			{}/{:04}/{:06}/{:06}/{:02}/{:08x}\n/{}",
+			{}\n/{:04}/{:06}/{:06}/{:02}/{:08x}\n/{}",
 			self.tree,
 			self.parent,
 			self.author, tstamp, //author
@@ -99,6 +99,7 @@ impl Worker {
 			value,
 			self.message
 		);
+    print!("{}\n",raw);
 		//be careful when changing - fails silently when wrong.
 		let blob = format!("commit {}\0{}", raw.len(), raw);
 
