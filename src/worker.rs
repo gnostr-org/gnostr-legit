@@ -80,6 +80,7 @@ impl Worker {
 	) -> (String, String) {
 
     print!("{}\n",self.tree);
+
 		let raw = format!(
 			"tree {}\n\
 			parent {}\n\
@@ -90,7 +91,7 @@ impl Worker {
 			self.parent,
 			self.author, tstamp, //author
 			self.author, tstamp, //committer
-      self.pwd_hash,
+      self.tree,
 			self.weeble.trim(),
 			self.wobble.trim(),
 			self.blockheight.trim(),
