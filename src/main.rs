@@ -84,7 +84,7 @@ fn main() -> io::Result<()> {
 	//println!("{}", datetime.format("%d/%m/%Y %T"));
 
 	let cwd = get_current_working_dir();
-	#[cfg(debug_assertions)]
+	//#[cfg(debug_assertions)]
 	//println!("Debugging enabled");
 	println!("{:#?}", cwd);
 	let state = repo::state();
