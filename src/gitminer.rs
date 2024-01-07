@@ -56,10 +56,10 @@ impl Gitminer {
 			};
 
 		let (tx, rx) = channel();
-
 		for i in 0..self.opts.threads {
 			let target = self.opts.target.clone();
 			let author = self.author.clone();
+			let repo = self.author.clone();
 			let msg = self.opts.message.clone();
 			let wtx = tx.clone();
 			let ts = self.opts.timestamp;
@@ -70,7 +70,7 @@ impl Gitminer {
 
 			thread::spawn(move || {
 				Worker::new(
-					i, target, wtree, wparent, author, msg, ts,
+					i, target, wtree, wparent, author, repo, msg, ts,
 					weeble, wobble, bh, wtx,
 				)
 				.work();

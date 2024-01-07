@@ -11,6 +11,7 @@ pub struct Worker {
 	tree: String,
 	parent: String,
 	author: String,
+	repo: String,
 	message: String,
 	timestamp: time::Tm,
 	weeble: String,
@@ -26,6 +27,7 @@ impl Worker {
 		tree: String,
 		parent: String,
 		author: String,
+		repo: String,
 		message: String,
 		timestamp: time::Tm,
 		weeble: String,
@@ -40,6 +42,7 @@ impl Worker {
 			tree,
 			parent,
 			author,
+			repo,
 			message,
 			timestamp,
 			weeble,
@@ -74,16 +77,15 @@ impl Worker {
 	) -> (String, String) {
 		let raw = format!(
 			"tree {}\n\
-                           parent {}\n\
-                           author {} {}\n\
-                           committer {} {}\n\n\
-                          {:04}/{:06}/{:06}/{:02}/{:08x}/{}",
+			parent {}\n\
+			author {} {}\n\
+			committer {} {}\n\n\
+			{}:{:04}/{:06}/{:06}/{:02}/{:08x}/{}",
 			self.tree,
 			self.parent,
-			self.author,
-			tstamp,
-			self.author,
-			tstamp,
+			self.author, tstamp,
+			self.author, tstamp,
+      self.author,
 			self.weeble.trim(),
 			self.wobble.trim(),
 			self.blockheight.trim(),
