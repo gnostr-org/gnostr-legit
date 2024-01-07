@@ -78,6 +78,8 @@ impl Worker {
 		value: u32,
 		tstamp: &str,
 	) -> (String, String) {
+
+    print!("test...");
 		let raw = format!(
 			"tree {}\n\
 			parent {}\n\
