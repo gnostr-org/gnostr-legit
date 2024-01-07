@@ -12,6 +12,7 @@ pub struct Options {
 	pub threads: u32,
 	pub target: String,
 	pub message: String,
+	pub pwd: String,
 	pub repo: String,
 	pub timestamp: time::Tm,
 	pub weeble: String,
@@ -23,6 +24,7 @@ pub struct Gitminer {
 	opts: Options,
 	repo: git2::Repository,
 	author: String,
+	pwd: String,
 	pub relays: String,
 }
 
@@ -37,11 +39,13 @@ impl Gitminer {
 
 		let author = Gitminer::load_author(&repo)?;
 		let relays = Gitminer::load_gnostr_relays(&repo)?;
+    let pwd = Default::default();
 
 		Ok(Gitminer {
 			opts,
 			repo,
 			author,
+			pwd,
 			relays,
 		})
 	}

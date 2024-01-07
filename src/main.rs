@@ -92,7 +92,7 @@ fn main() -> io::Result<()> {
 	//
 	let repo_root =
 		std::env::args().nth(1).unwrap_or(".".to_string());
-	//println!("repo_root={:?}", repo_root.as_str());
+	println!("repo_root={:?}", repo_root.as_str());
 	let repo = Repository::open(repo_root.as_str())
 		.expect("Couldn't open repository");
 	//println!("{} state={:?}", repo.path().display(), repo.state());
@@ -130,7 +130,7 @@ fn main() -> io::Result<()> {
 			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
 		})
 		.unwrap();
-	//println!("path={:?}", path);
+	println!("path={:?}", path);
 
 	//#!/bin/bash
 	//declare -a RELAYS
@@ -237,7 +237,7 @@ fn main() -> io::Result<()> {
 			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
 		})
 		.unwrap();
-	//println!("pwd={}", pwd);
+	println!("pwd={}", pwd);
 
 	#[allow(clippy::if_same_then_else)]
 	let gnostr_weeble = if cfg!(target_os = "windows") {
@@ -350,6 +350,7 @@ fn main() -> io::Result<()> {
 		//gnostr:##:nonce
 		//part of the gnostr protocol
 		//src/worker.rs adds the nonce
+    pwd: pwd.clone(),
 		message: pwd,
 		//message: message,
 		//message: count.to_string(),
