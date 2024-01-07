@@ -240,7 +240,7 @@ fn main() -> io::Result<()> {
 	let mut hasher = Sha256::new();
 	hasher.update(pwd.clone());
 	let pwd_hash = hasher.finalize();
-	println!("pwd_hash={:?}", pwd_hash);
+	println!("pwd_hash={:x}", pwd_hash);
 
 	#[allow(clippy::if_same_then_else)]
 	let gnostr_weeble = if cfg!(target_os = "windows") {
