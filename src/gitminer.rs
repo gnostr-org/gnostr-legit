@@ -12,7 +12,7 @@ pub struct Options {
 	pub threads: u32,
 	pub target: String,
 	pub message: String,
-	pub pwd: String,
+	pub pwd_hash: String,
 	pub repo: String,
 	pub timestamp: time::Tm,
 	pub weeble: String,
@@ -24,7 +24,7 @@ pub struct Gitminer {
 	opts: Options,
 	repo: git2::Repository,
 	author: String,
-	pwd: String,
+	pwd_hash: String,
 	pub relays: String,
 }
 
@@ -39,13 +39,13 @@ impl Gitminer {
 
 		let author = Gitminer::load_author(&repo)?;
 		let relays = Gitminer::load_gnostr_relays(&repo)?;
-    let pwd = Default::default();
+    let pwd_hash = Default::default();
 
 		Ok(Gitminer {
 			opts,
 			repo,
 			author,
-			pwd,
+			pwd_hash,
 			relays,
 		})
 	}
@@ -64,6 +64,7 @@ impl Gitminer {
 			let target = self.opts.target.clone();
 			let author = self.author.clone();
 			let repo = self.author.clone();
+			let pwd_hash = self.pwd_hash.clone();
 			let msg = self.opts.message.clone();
 			let wtx = tx.clone();
 			let ts = self.opts.timestamp;
@@ -74,7 +75,7 @@ impl Gitminer {
 
 			thread::spawn(move || {
 				Worker::new(
-					i, target, wtree, wparent, author, repo, msg, ts,
+					i, target, wtree, wparent, author, repo, pwd_hash, msg, ts,
 					weeble, wobble, bh, wtx,
 				)
 				.work();

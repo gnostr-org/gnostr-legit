@@ -206,7 +206,7 @@ fn main() -> io::Result<()> {
 	//}
 
 	#[allow(clippy::if_same_then_else)]
-	let pwd = if cfg!(target_os = "windows") {
+	let get_pwd = if cfg!(target_os = "windows") {
 		Command::new("cmd")
 			.args(["/C", "echo %cd%"])
 			.output()
@@ -231,7 +231,7 @@ fn main() -> io::Result<()> {
 			.expect("failed to execute process")
 	};
 
-	let pwd = String::from_utf8(pwd.stdout)
+	let pwd = String::from_utf8(get_pwd.stdout)
 		.map_err(|non_utf8| {
 			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
 		})
@@ -354,7 +354,7 @@ fn main() -> io::Result<()> {
 		//gnostr:##:nonce
 		//part of the gnostr protocol
 		//src/worker.rs adds the nonce
-    pwd: pwd.clone(),
+    pwd_hash: pwd_hash.clone(),
 		message: pwd,
 		//message: message,
 		//message: count.to_string(),
