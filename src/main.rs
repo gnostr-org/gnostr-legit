@@ -86,7 +86,7 @@ fn main() -> io::Result<()> {
 	let cwd = get_current_working_dir();
 	#[cfg(debug_assertions)]
 	//println!("Debugging enabled");
-	//println!("{:#?}", cwd);
+	println!("{:#?}", cwd);
 	let state = repo::state();
 	//println!("{:#?}", state);
 	//
