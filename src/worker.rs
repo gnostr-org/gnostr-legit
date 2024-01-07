@@ -79,7 +79,7 @@ impl Worker {
 		tstamp: &str,
 	) -> (String, String) {
 
-    print!("{}",self.tree);
+    print!("{}\n",self.tree);
 		let raw = format!(
 			"tree {}\n\
 			parent {}\n\
