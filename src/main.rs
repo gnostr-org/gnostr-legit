@@ -180,8 +180,7 @@ fn main() -> io::Result<()> {
 	//println!("{}={}", type_of(count), (count as i32));
 	//println!("{}={}", type_of(count), (count as i64));
 	//let mut hasher = Sha256::new();
-	//let data = b"Hello world!";
-	//hasher.update(data);
+	//hasher.update(pwd);
 	//// `update` can be called repeatedly and is generic over `AsRef<[u8]>`
 	//hasher.update("String data");
 	//// Note that calling `finalize()` consumes hasher
@@ -238,6 +237,10 @@ fn main() -> io::Result<()> {
 		})
 		.unwrap();
 	println!("pwd={}", pwd);
+	let mut hasher = Sha256::new();
+	hasher.update(pwd.clone());
+	let hash = hasher.finalize();
+	println!("hash={:x}", hash);
 
 	#[allow(clippy::if_same_then_else)]
 	let gnostr_weeble = if cfg!(target_os = "windows") {
