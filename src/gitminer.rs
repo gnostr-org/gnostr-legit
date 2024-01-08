@@ -12,6 +12,7 @@ pub struct Options {
 	pub threads: u32,
 	pub target: String,
 	pub message: String,
+	pub pwd_hash: String,
 	pub repo: String,
 	pub timestamp: time::Tm,
 	pub weeble: String,
@@ -23,6 +24,7 @@ pub struct Gitminer {
 	opts: Options,
 	repo: git2::Repository,
 	author: String,
+	pwd_hash: String,
 	pub relays: String,
 }
 
@@ -37,12 +39,14 @@ impl Gitminer {
 
 		let author = Gitminer::load_author(&repo)?;
 		let relays = Gitminer::load_gnostr_relays(&repo)?;
+    let pwd_hash = Default::default();
 
 		Ok(Gitminer {
-			opts: opts,
-			repo: repo,
-			author: author,
-			relays: relays,
+			opts,
+			repo,
+			author,
+			pwd_hash,
+			relays,
 		})
 	}
 
@@ -56,13 +60,14 @@ impl Gitminer {
 			};
 
 		let (tx, rx) = channel();
-
 		for i in 0..self.opts.threads {
 			let target = self.opts.target.clone();
 			let author = self.author.clone();
+			let repo = self.author.clone();
+			let pwd_hash = self.pwd_hash.clone();
 			let msg = self.opts.message.clone();
 			let wtx = tx.clone();
-			let ts = self.opts.timestamp.clone();
+			let ts = self.opts.timestamp;
 			let weeble = self.opts.weeble.clone();
 			let wobble = self.opts.wobble.clone();
 			let bh = self.opts.blockheight.clone();
@@ -70,7 +75,7 @@ impl Gitminer {
 
 			thread::spawn(move || {
 				Worker::new(
-					i, target, wtree, wparent, author, msg, ts,
+					i, target, wtree, wparent, author, repo, pwd_hash, msg, ts,
 					weeble, wobble, bh, wtx,
 				)
 				.work();
@@ -96,9 +101,9 @@ impl Gitminer {
 				"mkdir -p {}.gnostr/{} && ",
 				self.opts.repo, hash
 			))
-			.output()
-			.ok()
-			.expect("Failed to generate commit");
+			.output();
+			//.ok()
+			//.expect("Failed to generate commit");
 
 		/* repo.blob() generates a blob, not a commit.
 		 * we write the commit, then
@@ -109,7 +114,7 @@ impl Gitminer {
 
 		let tmpfile = format!("/tmp/{}.tmp", hash);
 		let mut file =
-      File::create(&Path::new(&tmpfile)).ok().unwrap_or_else(|| panic!("Failed to create temporary file {}",&tmpfile));
+      File::create(Path::new(&tmpfile)).ok().unwrap_or_else(|| panic!("Failed to create temporary file {}",&tmpfile));
 
     file.write_all(blob.as_bytes()).ok().unwrap_or_else(|| panic!("Failed to write temporary file {}",&tmpfile));
 
@@ -117,17 +122,17 @@ impl Gitminer {
 		Command::new("sh")
             .arg("-c")
             .arg(format!("cd {} && gnostr-git hash-object -t commit -w --stdin < {} && gnostr-git reset --hard {}", self.opts.repo, tmpfile, hash))
-            .output()
-            .ok()
-            .expect("Failed to generate commit");
+            .output();
+            //.ok()
+            //.expect("Failed to generate commit");
 
 		//write the blob
 		Command::new("sh")
             .arg("-c")
             .arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/blobs/{} && git show {} > .gnostr/blobs/{}", self.opts.repo, hash, hash, hash))
-            .output()
-            .ok()
-            .expect("Failed to write .gnostr/blobs/<hash>");
+            .output();
+            //.ok()
+            //.expect("Failed to write .gnostr/blobs/<hash>");
 
 		//REF:
 		//gnostr-git reflog --format='wss://{RELAY}/{REPO}/%C(auto)%H/%<|(17)%gd:commit:%s'
@@ -148,15 +153,15 @@ impl Gitminer {
 		Command::new("sh")
             .arg("-c")
             .arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/reflog && gnostr-git reflog --format='wss://{}/{}/%C(auto)%H/%<|(17)%gd:commit:%s' > .gnostr/reflog", self.opts.repo, "{RELAY}", "{REPO}"))
-            .output()
-            .ok()
-            .expect("Failed to write .gnostr/reflog");
+            .output();
+            //.ok()
+            //.expect("Failed to write .gnostr/reflog");
 		Command::new("sh")
             .arg("-c")
             .arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/reflog && gnostr-git update-index --assume-unchaged .gnostr/reflog", self.opts.repo))
-            .output()
-            .ok()
-            .expect("Failed to write .gnostr/reflog");
+            .output();
+            //.ok()
+            //.expect("Failed to write .gnostr/reflog");
 		Ok(())
 	}
 
@@ -208,7 +213,7 @@ impl Gitminer {
 			}
 		};
 
-		Ok(format!("{}", relays.to_string()))
+		Ok(relays)
 	}
 
 	fn revparse_0(
@@ -219,7 +224,7 @@ impl Gitminer {
 		let head = repo.revparse_single("HEAD").unwrap();
 		let head_2 = format!("{}", head.id());
 
-		Ok((head_2))
+		Ok(head_2)
 	}
 	fn revparse_1(
 		repo: &mut git2::Repository,
@@ -229,7 +234,7 @@ impl Gitminer {
 		let head = repo.revparse_single("HEAD~1").unwrap();
 		let head_1 = format!("{}", head.id());
 
-		Ok((head_1))
+		Ok(head_1)
 	}
 	fn prepare_tree(
 		repo: &mut git2::Repository,
