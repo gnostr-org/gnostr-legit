@@ -84,7 +84,7 @@ fn main() -> io::Result<()> {
 	//println!("{}", datetime.format("%d/%m/%Y %T"));
 
 	let cwd = get_current_working_dir();
-	#[cfg(debug_assertions)]
+	//#[cfg(debug_assertions)]
 	//println!("Debugging enabled");
 	//println!("{:#?}", cwd);
 	let state = repo::state();
@@ -180,8 +180,7 @@ fn main() -> io::Result<()> {
 	//println!("{}={}", type_of(count), (count as i32));
 	//println!("{}={}", type_of(count), (count as i64));
 	//let mut hasher = Sha256::new();
-	//let data = b"Hello world!";
-	//hasher.update(data);
+	//hasher.update(pwd);
 	//// `update` can be called repeatedly and is generic over `AsRef<[u8]>`
 	//hasher.update("String data");
 	//// Note that calling `finalize()` consumes hasher
@@ -207,7 +206,7 @@ fn main() -> io::Result<()> {
 	//}
 
 	#[allow(clippy::if_same_then_else)]
-	let pwd = if cfg!(target_os = "windows") {
+	let get_pwd = if cfg!(target_os = "windows") {
 		Command::new("cmd")
 			.args(["/C", "echo %cd%"])
 			.output()
@@ -232,12 +231,17 @@ fn main() -> io::Result<()> {
 			.expect("failed to execute process")
 	};
 
-	let pwd = String::from_utf8(pwd.stdout)
+	let pwd = String::from_utf8(get_pwd.stdout)
 		.map_err(|non_utf8| {
 			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
 		})
 		.unwrap();
 	//println!("pwd={}", pwd);
+	let mut hasher = Sha256::new();
+	hasher.update(pwd.clone());
+  //sha256sum <(echo gnostr-legit)
+	let pwd_hash: String = format!("{:x}", hasher.finalize());
+	//println!("pwd_hash={:?}", pwd_hash);
 
 	#[allow(clippy::if_same_then_else)]
 	let gnostr_weeble = if cfg!(target_os = "windows") {
@@ -350,15 +354,16 @@ fn main() -> io::Result<()> {
 		//gnostr:##:nonce
 		//part of the gnostr protocol
 		//src/worker.rs adds the nonce
+    pwd_hash: pwd_hash.clone(),
 		message: pwd,
 		//message: message,
 		//message: count.to_string(),
 		//repo:    ".".to_string(),
 		repo: path.as_path().display().to_string(),
 		timestamp: time::now(),
-		weeble: weeble,
-		wobble: wobble,
-		blockheight: blockheight,
+		weeble,
+		wobble,
+		blockheight,
 		//.duration_since(SystemTime::UNIX_EPOCH)
 	};
 

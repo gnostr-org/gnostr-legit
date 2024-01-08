@@ -1,7 +1,7 @@
 use crypto::digest::Digest;
 use crypto::sha1;
 use std::sync::mpsc;
-use time;
+//use time;
 
 pub struct Worker {
 	id: u32,
@@ -11,6 +11,8 @@ pub struct Worker {
 	tree: String,
 	parent: String,
 	author: String,
+	repo: String,
+	pwd_hash: String,
 	message: String,
 	timestamp: time::Tm,
 	weeble: String,
@@ -21,10 +23,13 @@ pub struct Worker {
 impl Worker {
 	pub fn new(
 		id: u32,
+		//digest: sha1::Sha1,
 		target: String,
 		tree: String,
 		parent: String,
 		author: String,
+		repo: String,
+		pwd_hash: String,
 		message: String,
 		timestamp: time::Tm,
 		weeble: String,
@@ -33,18 +38,20 @@ impl Worker {
 		tx: mpsc::Sender<(u32, String, String)>,
 	) -> Worker {
 		Worker {
-			id: id,
+			id,
 			digest: sha1::Sha1::new(),
-			tx: tx,
-			target: target,
-			tree: tree,
-			parent: parent,
-			author: author,
-			message: message,
-			timestamp: timestamp,
-			weeble: weeble,
-			wobble: wobble,
-			blockheight: blockheight,
+			target,
+			tree,
+			parent,
+			author,
+			repo,
+			pwd_hash,
+			message,
+			timestamp,
+			weeble,
+			wobble,
+			blockheight,
+			tx,
 		}
 	}
 
@@ -71,25 +78,29 @@ impl Worker {
 		value: u32,
 		tstamp: &str,
 	) -> (String, String) {
+
+    //print!("{}\n",self.tree);
+
 		let raw = format!(
 			"tree {}\n\
-                           parent {}\n\
-                           author {} {}\n\
-                           committer {} {}\n\n\
-                          {:04}/{:06}/{:06}/{:02}/{:08x}/{}",
+			parent {}\n\
+			author {} {}\n\
+			committer {} {}\n\n\
+			{}/{:04}/{:06}/{:06}/{:02}/{:08x}\n{}",
 			self.tree,
 			self.parent,
-			self.author,
-			tstamp,
-			self.author,
-			tstamp,
+			self.author, tstamp, //author
+			self.author, tstamp, //committer
+      self.tree,
 			self.weeble.trim(),
 			self.wobble.trim(),
 			self.blockheight.trim(),
-			self.id,
-			value,
+			self.id, value,
 			self.message
 		);
+
+    //print!("{}\n",raw);
+
 		//be careful when changing - fails silently when wrong.
 		let blob = format!("commit {}\0{}", raw.len(), raw);
 
