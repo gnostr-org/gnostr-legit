@@ -93,8 +93,8 @@ impl Worker {
 			self.author, tstamp, //committer
       self.tree,
 			self.weeble.trim(),
-			self.wobble.trim(),
 			self.blockheight.trim(),
+			self.wobble.trim(),
 			self.id, value,
 			self.message
 		);
