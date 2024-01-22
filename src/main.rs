@@ -429,22 +429,22 @@ fn main() -> io::Result<()> {
 	#[allow(clippy::if_same_then_else)]
 	let event = if cfg!(target_os = "windows") {
 		Command::new("cmd")
-                .args(["/C", "gnostr --sec $(gnostr-sha256 0) --tag weeble $(gnostr-weeble || echo weeble) --tag wobble $(gnostr-wobble || echo wobble) --tag blockheight $(gnostr-blockheight || echo blockheight) --envelope --content \"$(gnostr-git diff HEAD~1 || gnostr-git diff)\" "])
+                .args(["/C", "gnostr --sec $(gnostr-sha256 $(gnostr-weeble || echo)) -t gnostr --tag weeble $(gnostr-weeble || echo weeble) --tag wobble $(gnostr-wobble || echo wobble) --tag blockheight $(gnostr-blockheight || echo blockheight) --content \"$(gnostr-git diff HEAD~1 || gnostr-git diff)\" "])
                 .output()
                 .expect("failed to execute process")
 	} else if cfg!(target_os = "macos") {
 		Command::new("sh")
-                .args(["-c", "gnostr --sec $(gnostr-sha256 0) --tag weeble $(gnostr-weeble || echo weeble) --tag wobble $(gnostr-wobble || echo wobble) --tag blockheight $(gnostr-blockheight || echo blockheight) --envelope --content \"$(gnostr-git diff HEAD~1 || gnostr-git diff)\" "])
+                .args(["-c", "gnostr --sec $(gnostr-sha256 $(gnostr-weeble || echo)) -t gnostr --tag weeble $(gnostr-weeble || echo weeble) --tag wobble $(gnostr-wobble || echo wobble) --tag blockheight $(gnostr-blockheight || echo blockheight) --content \"$(gnostr-git show HEAD)\" "])
                 .output()
                 .expect("failed to execute process")
 	} else if cfg!(target_os = "linux") {
 		Command::new("sh")
-                .args(["-c", "gnostr --sec $(gnostr-sha256 0) --tag weeble $(gnostr-weeble || echo weeble) --tag wobble $(gnostr-wobble || echo wobble) --tag blockheight $(gnostr-blockheight || echo blockheight) --envelope --content \"$(gnostr-git diff HEAD~1 || gnostr-git diff)\" "])
+                .args(["-c", "gnostr --sec $(gnostr-sha256 $(gnostr-weeble || echo)) -t gnostr --tag weeble $(gnostr-weeble || echo weeble) --tag wobble $(gnostr-wobble || echo wobble) --tag blockheight $(gnostr-blockheight || echo blockheight) --content \"$(gnostr-git diff HEAD~1 || gnostr-git diff)\" "])
                 .output()
                 .expect("failed to execute process")
 	} else {
 		Command::new("sh")
-                .args(["-c", "gnostr --sec $(gnostr-sha256 0) --tag weeble $(gnostr-weeble || echo weeble) --tag wobble $(gnostr-wobble || echo wobble) --tag blockheight $(gnostr-blockheight || echo blockheight) --envelope --content \"$(gnostr-git diff HEAD~1 || gnostr-git diff)\" "])
+                .args(["-c", "gnostr --sec $(gnostr-sha256 $(gnostr-weeble || echo)) -t gnostr --tag weeble $(gnostr-weeble || echo weeble) --tag wobble $(gnostr-wobble || echo wobble) --tag blockheight $(gnostr-blockheight || echo blockheight) --content \"$(gnostr-git diff HEAD~1 || gnostr-git diff)\" "])
                 .output()
                 .expect("failed to execute process")
 	};
