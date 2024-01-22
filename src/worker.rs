@@ -86,12 +86,12 @@ impl Worker {
 			parent {}\n\
 			author {} {}\n\
 			committer {} {}\n\n\
-			{}/{:04}/{:06}/{:06}/{:02}/{:08x}\n{}",
+			{}/{:04}/{:06}/{:}/{:02}/{:08x}\n{}",
 			self.tree,
 			self.parent,
 			self.author, tstamp, //author
 			self.author, tstamp, //committer
-      self.tree,
+			self.tree,
 			self.weeble.trim(),
 			self.blockheight.trim(),
 			self.wobble.trim(),
