@@ -2,7 +2,8 @@
 name    = "gnostr-legit"
 version = "0.0.6"
 authors = ["@RandyMcMillan <randy.lee.mcmillan@gmail.com>", "John <john@throttle.io>"]
-edition = "2018"
+edition = "2021"
+rust-version = "1.71.1"
 description = "gnostr blob manager and pow miner"
 documentation = "https://legit.gnostr.org"
 readme = "README.md"
