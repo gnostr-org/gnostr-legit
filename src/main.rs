@@ -21,9 +21,9 @@ use std::{io, thread};
 
 use std::path::PathBuf; //for get_current_dir
 
-mod gitminer;
-mod repo;
-mod worker;
+pub mod gitminer;
+pub mod repo;
+pub mod worker;
 
 //fn type_of<T>(_: T) -> &'static str {
 //    type_name::<T>()
