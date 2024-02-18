@@ -75,55 +75,74 @@ fn get_ref() {
         //Path::new("../.git").is_file();
         Path::new(".git").is_file();
 
-        //if _git_file true
-        //git now we assume gnostr-legit is a submodule
-        //to the parent repo
-        //TODO: handle deeper nested submodule cases
-        //TODO: make module is_submodule
+    //if _git_file true
+    //git now we assume gnostr-legit is a submodule
+    //to the parent repo
+    //TODO: handle deeper nested submodule cases
+    //TODO: make module is_submodule
 
     if _git_file {
-
-        println!(".git is_file {}", _git_file);
-        //gitdir: ../.git/modules/gnostr-legit
+        if cfg!(debug_assertions) {
+            println!(".git is_file {}", _git_file);
+            //gitdir: ../.git/modules/gnostr-legit
+        }
 
         const NAME: Option<&str> = option_env!("CARGO_PKG_NAME");
         const REF_MODULE: &str = include_str!("../.git");
-        println!("REF_MODULE = {:?}", REF_MODULE);
+        if cfg!(debug_assertions) {
+            println!("REF_MODULE = {:?}", REF_MODULE);
+        }
 
         let v_ref_module: Vec<&str> = REF_MODULE.split(' ').collect();
         for _part in &v_ref_module {
             if REF_MODULE == "gitdir: ../.git/modules/gnostr-legit" {
-                println!("REF_MODULE = {:?}", REF_MODULE);
-                println!("{}/{}", NAME.unwrap_or("unknown"), REF_MODULE);
+                if cfg!(debug_assertions) {
+                    println!("REF_MODULE = {:?}", REF_MODULE);
+                    println!("{}/{}", NAME.unwrap_or("unknown"), REF_MODULE);
+                }
             }
-            println!("&v_ref_module[0] = {}", &v_ref_module[0]);
-            println!("&v_ref_module[1] = {}", &v_ref_module[1]);
-            println!("{}/{}", NAME.unwrap_or("unknown"), &v_ref_module[1]);
-            println!("{}", _part);
-            //process::exit(0);
+            if cfg!(debug_assertions) {
+                println!("&v_ref_module[0] = {}", &v_ref_module[0]);
+                println!("&v_ref_module[1] = {}", &v_ref_module[1]);
+                println!("{}/{}", NAME.unwrap_or("unknown"), &v_ref_module[1]);
+                println!("{}", _part);
+                //process::exit(0);
+            }
         }
 
         if REF_MODULE == "gitdir: ../.git/modules/gnostr-legit" {
-            println!("REF_MODULE = {:?}", REF_MODULE);
-            println!("{}/{}", NAME.unwrap_or("unknown"), REF_MODULE);
+            if cfg!(debug_assertions) {
+                println!("REF_MODULE = {:?}", REF_MODULE);
+                println!("{}/{}", NAME.unwrap_or("unknown"), REF_MODULE);
+            }
         }
     } else {
-        println!(".git is_file {}", _git_file);
+        if cfg!(debug_assertions) {
+            println!(".git is_file {}", _git_file);
+        }
     } // end if _git_fileA
       //
     let _git_dir =
         //Path::new("../.git").is_dir();
         Path::new(".git").is_dir();
     if _git_dir {
-        println!(".git is_dir {}", _git_dir);
+        if cfg!(debug_assertions) {
+            println!(".git is_dir {}", _git_dir);
+        }
     } else {
-        println!(".git is_dir {}", _git_dir);
+        if cfg!(debug_assertions) {
+            println!(".git is_dir {}", _git_dir);
+        }
     }
 
     let ref_heads_master = Path::new("../.git/refs/heads/master").exists();
-    println!("{}", ref_heads_master);
+    if cfg!(debug_assertions) {
+        println!("{}", ref_heads_master);
+    }
     let git_head = Path::new("../.git/HEAD").exists();
-    println!("{}", git_head);
+    if cfg!(debug_assertions) {
+        println!("{}", git_head);
+    }
 
     //if ref_heads_master{
     //    //gitdir: ../.git/modules/gnostr-legit
@@ -131,8 +150,10 @@ fn get_ref() {
     const NAME: Option<&str> = option_env!("CARGO_PKG_NAME");
     const REF_MODULE: &str = include_str!("../.git");
     if REF_MODULE == "gitdir: ../.git/modules/gnostr-legit" {
-        println!("REF_MODULE = {:?}", REF_MODULE);
-        println!("{}/{}", NAME.unwrap_or("unknown"), REF_MODULE);
+        if cfg!(debug_assertions) {
+            println!("REF_MODULE = {:?}", REF_MODULE);
+            println!("{}/{}", NAME.unwrap_or("unknown"), REF_MODULE);
+        }
     }
 
     //const REF_MASTER: &str = include_str!("../.git/refs/heads/master");
