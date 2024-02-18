@@ -20,6 +20,9 @@ use sha2::{Digest, Sha256};
 use std::{io, thread};
 
 use std::path::PathBuf; //for get_current_dir
+use std::path::Path;
+use std::fs;
+use std::process;
 
 mod gitminer;
 mod repo;
@@ -60,6 +63,82 @@ fn example() {
 	//println!("cwd={:?}",get_current_working_dir());
 }
 
+pub fn path_exists(path: &str) -> bool {
+    fs::metadata(path).is_ok()
+}
+
+fn get_ref(){
+
+#[allow(dead_code)]
+
+    let _git_file =
+        //Path::new("../.git").is_file();
+        Path::new(".git").is_file();
+    if _git_file{
+        println!(".git is_file {}", _git_file);
+        //gitdir: ../.git/modules/gnostr-legit
+
+        const NAME: Option<&str> = option_env!("CARGO_PKG_NAME");
+        const REF_MODULE: &str = include_str!("../.git");
+        println!("REF_MODULE = {:?}", REF_MODULE);
+
+        let v_ref_module: Vec<&str> = REF_MODULE.split(' ').collect();
+                 for _part in &v_ref_module {
+                     if REF_MODULE == "gitdir: ../.git/modules/gnostr-legit" {
+                         println!("REF_MODULE = {:?}", REF_MODULE);
+                         println!("{}/{}", NAME.unwrap_or("unknown"), REF_MODULE);
+                     }
+                     println!("&v_ref_module[0] = {}", &v_ref_module[0]);
+                     println!("&v_ref_module[1] = {}", &v_ref_module[1]);
+                     println!("{}/{}", NAME.unwrap_or("unknown"), &v_ref_module[1]);
+                     println!("{}", _part);
+                     process::exit(0);
+                 }
+
+
+        if REF_MODULE == "gitdir: ../.git/modules/gnostr-legit"
+        {
+            println!("REF_MODULE = {:?}", REF_MODULE);
+            println!("{}/{}", NAME.unwrap_or("unknown"), REF_MODULE);
+        }
+
+    } else {
+        println!(".git is_file {}", _git_file);
+    }
+    let _git_dir =
+        //Path::new("../.git").is_dir();
+        Path::new(".git").is_dir();
+    if _git_dir{
+        println!(".git is_dir {}", _git_dir);
+    }else{
+    println!(".git is_dir {}", _git_dir);
+    }
+
+    let ref_heads_master =
+        Path::new("../.git/refs/heads/master").exists();
+    println!("{}", ref_heads_master);
+    let git_head = Path::new("../.git/HEAD").exists();
+    println!("{}", git_head);
+
+    //if ref_heads_master{
+    //    //gitdir: ../.git/modules/gnostr-legit
+    //    //println!("{}", Path::new("/etc/hosts").exists());
+    const NAME: Option<&str> = option_env!("CARGO_PKG_NAME");
+    const REF_MODULE: &str = include_str!("../.git");
+    if REF_MODULE == "gitdir: ../.git/modules/gnostr-legit"
+    {
+        println!("REF_MODULE = {:?}", REF_MODULE);
+        println!("{}/{}", NAME.unwrap_or("unknown"), REF_MODULE);
+    }
+
+    //const REF_MASTER: &str = include_str!("../.git/refs/heads/master");
+    //}
+    //if git_head{
+    //    //gitdir: ../.git/modules/gnostr-legit
+    //const REF: &str = include_str!("../.git/HEAD");
+    //}
+}
+
 fn main() -> io::Result<()> {
 	#[allow(clippy::if_same_then_else)]
 	if cfg!(debug_assertions) {
@@ -67,6 +146,7 @@ fn main() -> io::Result<()> {
 	} else {
 		//println!("Debugging disabled");
 	}
+    get_ref();
 
 	#[cfg(debug_assertions)]
 	//println!("Debugging enabled");
