@@ -71,9 +71,18 @@ fn get_ref() {
     #[allow(dead_code)]
 
     let _git_file =
+
         //Path::new("../.git").is_file();
         Path::new(".git").is_file();
+
+        //if _git_file true
+        //git now we assume gnostr-legit is a submodule
+        //to the parent repo
+        //TODO: handle deeper nested submodule cases
+        //TODO: make module is_submodule
+
     if _git_file {
+
         println!(".git is_file {}", _git_file);
         //gitdir: ../.git/modules/gnostr-legit
 
