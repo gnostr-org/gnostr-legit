@@ -113,6 +113,7 @@ rustup-install-nightly:## 	rustup-install-nightly
 cargo-b:## 	cargo-b
 	[ -x "$(shell command -v $(RUSTUP))" ] || $(MAKE) rustup-install-stable
 	[ -x "$(shell command -v $(CARGO))" ] && $(CARGO) build
+cargo-br:cargo-b-release
 cargo-b-release:## 	cargo-b-release
 	[ -x "$(shell command -v $(RUSTUP))" ] || $(MAKE) rustup-install-stable
 	[ -x "$(shell command -v $(CARGO))" ] && $(CARGO) build --release
