@@ -19,6 +19,7 @@ git2        = "^0.17"
 pad = "0.1.6"
 rust-crypto = "0.2.36"
 sha2 = "0.10.7"
+structopt = "0.3.26"
 time        = "0.1.42"
 #crypto      = "0.4.0"
 

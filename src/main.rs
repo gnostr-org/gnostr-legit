@@ -24,6 +24,58 @@ use std::path::Path;
 use std::path::PathBuf; //for get_current_dir
 use std::process;
 
+
+use git2::{Error, ErrorCode, Repository, StatusOptions, SubmoduleIgnore};
+use std::str;
+use structopt::StructOpt;
+
+#[derive(StructOpt)]
+struct Args {
+    arg_spec: Vec<String>,
+    #[structopt(name = "long", long)]
+    /// show longer statuses (default)
+    _flag_long: bool,
+    /// show short statuses
+    #[structopt(name = "short", long)]
+    flag_short: bool,
+    #[structopt(name = "porcelain", long)]
+    /// ??
+    flag_porcelain: bool,
+    #[structopt(name = "branch", short, long)]
+    /// show branch information
+    flag_branch: bool,
+    #[structopt(name = "z", short)]
+    /// ??
+    flag_z: bool,
+    #[structopt(name = "ignored", long)]
+    /// show ignored files as well
+    flag_ignored: bool,
+    #[structopt(name = "opt-modules", long = "untracked-files")]
+    /// setting for showing untracked files [no|normal|all]
+    flag_untracked_files: Option<String>,
+    #[structopt(name = "opt-files", long = "ignore-submodules")]
+    /// setting for ignoring submodules [all]
+    flag_ignore_submodules: Option<String>,
+    #[structopt(name = "dir", long = "git-dir")]
+    /// git directory to analyze
+    flag_git_dir: Option<String>,
+    #[structopt(name = "repeat", long)]
+    /// repeatedly show status, sleeping inbetween
+    flag_repeat: bool,
+    #[structopt(name = "list-submodules", long)]
+    /// show submodules
+    flag_list_submodules: bool,
+}
+
+#[derive(Eq, PartialEq)]
+enum Format {
+    Long,
+    Short,
+    Porcelain,
+}
+
+
+
 mod gitminer;
 mod repo;
 mod worker;
