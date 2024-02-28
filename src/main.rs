@@ -554,6 +554,7 @@ fn main() {
     ////println!("wobble={}",gnostr_bins::get_wobble().unwrap());
 
     println!("get_pwd()={}",get_pwd().unwrap());
+    let cwd = get_pwd();
     let mut hasher = Sha256::new();
     hasher.update(get_pwd().unwrap());
     let pwd_hash: String = format!("{:x}", hasher.finalize());
@@ -564,8 +565,9 @@ fn main() {
     //let a: A = AB::A(A).try_into().map_err(Error::msg)?;
     //let count = thread::available_parallelism()?.get().try_into().map_err(Error::msg);
     //let count = thread::available_parallelism().get();
+    let count = thread::available_parallelism().expect("REASON").get();
     //TODO reimplement 
-    let count = 1;
+    //let count = 1;
     //assert!(count >= 1_usize);
     let mut gitminer_opts = gitminer::Options {
         threads: count.try_into().unwrap(),
@@ -574,19 +576,25 @@ fn main() {
         //part of the gnostr protocol
         //src/worker.rs adds the nonce
         pwd_hash: pwd_hash.clone(),
-        //message: test_message,//args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
-        message: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
-        //message: message,
-        //message: count.to_string(),
-        //repo:    ".".to_string(),
+        message: cwd.unwrap(),
+        //message: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
         repo: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
+        //repo:    ".".to_string(),
         timestamp: time::now(),
         weeble: get_weeble().unwrap(),
         wobble: get_wobble().unwrap(),
         blockheight: blockheight().unwrap(),
-        //.duration_since(SystemTime::UNIX_EPOCH)
     };
 
+    println!("gitminer_opts.message={}",gitminer_opts.threads);
+    println!("gitminer_opts.message={}",gitminer_opts.target);
+    println!("gitminer_opts.message={}",gitminer_opts.pwd_hash);
+    println!("gitminer_opts.message={}",gitminer_opts.message);
+    println!("gitminer_opts.message={}",gitminer_opts.repo);
+    println!("gitminer_opts.message={:?}",gitminer_opts.timestamp);
+    println!("gitminer_opts.message={}",gitminer_opts.weeble);
+    println!("gitminer_opts.message={}",gitminer_opts.wobble);
+    println!("gitminer_opts.message={}",gitminer_opts.blockheight);
 
     run(&args);
     //run::<E>(&args);
