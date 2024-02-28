@@ -12,12 +12,50 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#![deny(warnings)]
+#![allow(warnings)]
 
 use git2::{Error, ErrorCode, Repository, StatusOptions, SubmoduleIgnore};
 use std::str;
+use std::io;
+use std::thread;
 use std::time::Duration;
+use std::convert::TryInto;
 use structopt::StructOpt;
+
+use gnostr_bins::{get_blockheight};
+use gnostr_bins::{get_weeble};
+use gnostr_bins::{get_wobble};
+use gnostr_bins::{get_pwd};
+
+use sha2::Digest;
+use sha2::Sha256;
+
+use argparse::ArgumentParser;
+use argparse::Store;
+
+mod gitminer;
+mod repo;
+mod worker;
+
+//let mut gitminer_opts = gitminer::Options {
+//    threads: count.try_into().unwrap(),
+//    target: "00000".to_string(), //default 00000
+//    //gnostr:##:nonce
+//    //part of the gnostr protocol
+//    //src/worker.rs adds the nonce
+//    pwd_hash: pwd_hash.clone(),
+//    message: pwd,
+//    //message: message,
+//    //message: count.to_string(),
+//    //repo:    ".".to_string(),
+//    repo: path.as_path().display().to_string(),
+//    timestamp: time::now(),
+//    weeble,
+//    wobble,
+//    blockheight,
+//    //.duration_since(SystemTime::UNIX_EPOCH)
+//};
+
 
 #[derive(StructOpt)]
 struct Args {
@@ -49,6 +87,12 @@ struct Args {
     #[structopt(name = "dir", long = "git-dir")]
     /// git directory to analyze
     flag_git_dir: Option<String>,
+
+
+
+
+
+
     #[structopt(name = "repeat", long)]
     /// repeatedly show status, sleeping inbetween
     flag_repeat: bool,
@@ -64,12 +108,85 @@ enum Format {
     Porcelain,
 }
 
+fn parse_args_or_exit(opts: &mut gitminer::Options) {
+    let mut ap = ArgumentParser::new();
+    ap.set_description("Generate git commit sha with a custom prefix");
+    ap.stop_on_first_argument(false);
+
+    //ap.refer(&mut opts.repo)
+    //    //.add_argument("repository-path", Store, "Path to your git repository (required)");
+    //    .add_argument("repository-path", Store, "Path to your git repository");
+    //    //.required();
+    ap.refer(&mut opts.repo)
+        .add_argument("repository-path", Store, "Path to your git repository");
+
+    ap.refer(&mut opts.target).add_option(
+        &["-p", "--prefix"],
+        Store,
+        "Desired commit prefix (required)",
+    );
+    //.required();
+
+    ap.refer(&mut opts.threads).add_option(
+        &["-t", "--threads"],
+        Store,
+        "Number of worker threads to use (default 8)",
+    );
+
+    ap.refer(&mut opts.message).add_option(
+        &["-m", "--message"],
+        Store,
+        "Commit message to use (required)",
+    );
+    //.required();
+
+    //ap.refer(&mut opts.timestamp)
+    //    .add_option(&["--timestamp"], Store, "Commit timestamp to use (default now)");
+
+    ap.parse_args_or_exit();
+}
+
+
+//fn run<E: std::convert::From<git2::Error> + std::convert::From<std::io::Error>>(args: &Args) -> Result<(), E> {
 fn run(args: &Args) -> Result<(), Error> {
+
+
+
     let path = args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string());
     let repo = Repository::open(&path)?;
     if repo.is_bare() {
-        return Err(Error::from_str("cannot report status on bare repository"));
+        return Err(Error::from_str("cannot report status on bare repository").into());
     }
+    let mut hasher = Sha256::new();
+    hasher.update(get_pwd().unwrap());
+    //sha256sum <(echo gnostr-legit)
+    let pwd_hash: String = format!("{:x}", hasher.finalize());
+    //println!("pwd_hash={:?}", pwd_hash);
+
+
+    //let count = thread::available_parallelism()?.get();
+    //let count = thread::available_parallelism().get();
+    //TODO reimplement 
+    let count = 4;
+    assert!(count >= 1_usize);
+    let mut gitminer_opts = gitminer::Options {
+        threads: count.try_into().unwrap(),
+        target: "00000".to_string(), //default 00000
+        //gnostr:##:nonce
+        //part of the gnostr protocol
+        //src/worker.rs adds the nonce
+        pwd_hash: pwd_hash.clone(),
+        message: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
+        //message: message,
+        //message: count.to_string(),
+        //repo:    ".".to_string(),
+        repo: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
+        timestamp: time::now(),
+        weeble: gnostr_bins::get_weeble().unwrap(),
+        wobble: gnostr_bins::get_wobble().unwrap(),
+        blockheight: gnostr_bins::get_blockheight().unwrap(),
+        //.duration_since(SystemTime::UNIX_EPOCH)
+    };
 
     let mut opts = StatusOptions::new();
     opts.include_ignored(args.flag_ignored);
@@ -83,14 +200,14 @@ fn run(args: &Args) -> Result<(), Error> {
         Some("all") => {
             opts.include_untracked(true).recurse_untracked_dirs(true);
         }
-        Some(_) => return Err(Error::from_str("invalid untracked-files value")),
+        Some(_) => return Err(Error::from_str("invalid untracked-files value").into()),
         None => {}
     }
     match args.flag_ignore_submodules.as_ref().map(|s| &s[..]) {
         Some("all") => {
             opts.exclude_submodules(true);
         }
-        Some(_) => return Err(Error::from_str("invalid ignore-submodules value")),
+        Some(_) => return Err(Error::from_str("invalid ignore-submodules value").into()),
         None => {}
     }
     opts.include_untracked(!args.flag_ignored);
@@ -434,8 +551,10 @@ impl Args {
 
 fn main() {
     let args = Args::from_args();
-    match run(&args) {
-        Ok(()) => {}
-        Err(e) => println!("error: {}", e),
-    }
+    run(&args);
+    //match run(&args) {
+    //    Ok(()) => {}
+    //    Err(e) => println!("error: {}", e),
+    //}
 }
+
