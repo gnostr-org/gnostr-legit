@@ -622,8 +622,7 @@ dependencies = [
 [[package]]
 name = "gnip44"
 version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8331e0167bde2161bf91f938dab386cfd8b6491732a02f4ec2c5b16c20e21e78"
+source = "git+https://github.com/gnostr-org/gnip44#0d4bbc3359973d9daa216676a3fa15584f62797e"
 dependencies = [
  "base64 0.21.7",
  "chacha20",
@@ -638,9 +637,7 @@ dependencies = [
 
 [[package]]
 name = "gnostr-bins"
-version = "0.0.10"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2d1219de2e98ec7a2c5397b5d3c8bdb92540e1e82ec26f4fad5d78f432ec3aa9"
+version = "0.0.12"
 dependencies = [
  "ascii",
  "base64 0.21.7",
@@ -685,8 +682,7 @@ dependencies = [
 [[package]]
 name = "gnostr-types"
 version = "0.7.1-unstable"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5213015471e7dcc0c2e27ee2735e1622bb38e1cd2eae21fc9e159bd859b1a8a6"
+source = "git+https://github.com/gnostr-org/gnostr-types#4334e7f24e8a9dda8ee45a42e5e91441af0fd38a"
 dependencies = [
  "aes",
  "base64 0.21.7",
