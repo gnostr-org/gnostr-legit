@@ -88,6 +88,9 @@ fn get_ref() {
         }
 
         const NAME: Option<&str> = option_env!("CARGO_PKG_NAME");
+        if cfg!(debug_assertions) {
+            println!("NAME = {:?}", NAME);
+        }
         const REF_MODULE: &str = include_str!("../.git");
         if cfg!(debug_assertions) {
             println!("REF_MODULE = {:?}", REF_MODULE);
@@ -120,7 +123,7 @@ fn get_ref() {
         if cfg!(debug_assertions) {
             println!(".git is_file {}", _git_file);
         }
-    } // end if _git_fileA
+    } // end if _git_file
       //
     let _git_dir =
         //Path::new("../.git").is_dir();
