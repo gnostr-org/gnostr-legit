@@ -22,10 +22,13 @@ use std::time::Duration;
 use std::convert::TryInto;
 use structopt::StructOpt;
 
-use gnostr_bins::{get_blockheight};
-use gnostr_bins::{get_weeble};
-use gnostr_bins::{get_wobble};
-use gnostr_bins::{get_pwd};
+extern crate gnostr_bins;
+use gnostr_bins::weeble;
+use gnostr_bins::wobble;
+use gnostr_bins::blockheight;
+use gnostr_bins::get_pwd;
+
+use gnostr_bins::get_weeble;
 
 use sha2::Digest;
 use sha2::Sha256;
@@ -153,40 +156,54 @@ fn run(args: &Args) -> Result<(), Error> {
 
 
     let path = args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string());
+    println!("path={}",args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()));
+    println!("path={}",path);
     let repo = Repository::open(&path)?;
     if repo.is_bare() {
         return Err(Error::from_str("cannot report status on bare repository").into());
     }
+
+    //let weeble = gnostr_bins::weeble().unwrap();
+    //let weeble = weeble().unwrap();
+    //println!("weeble");
+    //println!("wobble={}",weeble);
+    ////println!("webble={}",gnostr_bins::get_wobble().unwrap());
+    //let wobble = wobble().unwrap();
+    //println!("wobble");
+    //println!("wobble={}",wobble);
+    ////println!("wobble={}",gnostr_bins::get_wobble().unwrap());
+
+    println!("get_pwd()={}",get_pwd().unwrap());
     let mut hasher = Sha256::new();
     hasher.update(get_pwd().unwrap());
-    //sha256sum <(echo gnostr-legit)
     let pwd_hash: String = format!("{:x}", hasher.finalize());
-    //println!("pwd_hash={:?}", pwd_hash);
+    println!("pwd_hash={}",pwd_hash);
 
-
+    //let mut test_message = String::new();
+    let mut test_message = "test_message".to_string();
     //let count = thread::available_parallelism()?.get();
     //let count = thread::available_parallelism().get();
     //TODO reimplement 
-    let count = 4;
-    assert!(count >= 1_usize);
-    let mut gitminer_opts = gitminer::Options {
-        threads: count.try_into().unwrap(),
-        target: "00000".to_string(), //default 00000
-        //gnostr:##:nonce
-        //part of the gnostr protocol
-        //src/worker.rs adds the nonce
-        pwd_hash: pwd_hash.clone(),
-        message: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
-        //message: message,
-        //message: count.to_string(),
-        //repo:    ".".to_string(),
-        repo: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
-        timestamp: time::now(),
-        weeble: gnostr_bins::get_weeble().unwrap(),
-        wobble: gnostr_bins::get_wobble().unwrap(),
-        blockheight: gnostr_bins::get_blockheight().unwrap(),
-        //.duration_since(SystemTime::UNIX_EPOCH)
-    };
+    //let count = 1;
+    //assert!(count >= 1_usize);
+    //let mut gitminer_opts = gitminer::Options {
+    //    threads: count.try_into().unwrap(),
+    //    target: "00000".to_string(), //default 00000
+    //    //gnostr:##:nonce
+    //    //part of the gnostr protocol
+    //    //src/worker.rs adds the nonce
+    //    pwd_hash: pwd_hash.clone(),
+    //    message: test_message,//args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
+    //    //message: message,
+    //    //message: count.to_string(),
+    //    //repo:    ".".to_string(),
+    //    repo: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
+    //    timestamp: time::now(),
+    //    weeble: weeble().unwrap().to_string(),
+    //    wobble: wobble().unwrap().to_string(),
+    //    blockheight: blockheight().unwrap().to_string(),
+    //    //.duration_since(SystemTime::UNIX_EPOCH)
+    //};
 
     let mut opts = StatusOptions::new();
     opts.include_ignored(args.flag_ignored);
@@ -550,6 +567,14 @@ impl Args {
 }
 
 fn main() {
+
+    //capture weeble/blockheight/wobble
+
+    let weeble = weeble().unwrap();
+    let wobble = wobble().unwrap();
+    let blockheight = blockheight().unwrap();
+    println!("{}/{}/{}",weeble,blockheight,wobble);
+
     let args = Args::from_args();
     run(&args);
     //match run(&args) {
