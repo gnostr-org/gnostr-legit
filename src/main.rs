@@ -198,9 +198,15 @@ fn main() -> io::Result<()> {
     let state = repo::state();
     //println!("{:#?}", state);
     //
-    let repo_root = std::env::args().nth(1).unwrap_or(".".to_string());
+    //bypass gnostr-legit . -m "..."
+    //no need to require . as first positional arg
+    //let repo_root = std::env::args().nth(1).unwrap_or(".".to_string());
     //println!("repo_root={:?}", repo_root.as_str());
-    let repo = Repository::open(repo_root.as_str()).expect("Couldn't open repository");
+    //let repo = Repository::open(repo_root.as_str()).expect("Couldn't open repository");
+    let repo = match Repository::open(".") {
+        Ok(repo) => repo,
+        Err(e) => panic!("Error opening repository: {}", e),
+    };
     //println!("{} state={:?}", repo.path().display(), repo.state());
     //println!("state={:?}", repo.state());
 
