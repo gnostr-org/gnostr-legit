@@ -44,26 +44,6 @@ mod gitminer;
 mod repo;
 mod worker;
 
-//let mut gitminer_opts = gitminer::Options {
-//    threads: count.try_into().unwrap(),
-//    target: "00000".to_string(), //default 00000
-//    //gnostr:##:nonce
-//    //part of the gnostr protocol
-//    //src/worker.rs adds the nonce
-//    pwd_hash: pwd_hash.clone(),
-//    message: pwd,
-//    //message: message,
-//    //message: count.to_string(),
-//    //repo:    ".".to_string(),
-//    repo: path.as_path().display().to_string(),
-//    timestamp: time::now(),
-//    weeble,
-//    wobble,
-//    blockheight,
-//    //.duration_since(SystemTime::UNIX_EPOCH)
-//};
-
-
 #[derive(StructOpt)]
 struct Args {
     arg_spec: Vec<String>,
@@ -94,11 +74,6 @@ struct Args {
     #[structopt(name = "dir", long = "git-dir")]
     /// git directory to analyze
     flag_git_dir: Option<String>,
-
-
-
-
-
 
     #[structopt(name = "repeat", long)]
     /// repeatedly show status, sleeping inbetween
@@ -153,23 +128,17 @@ fn parse_args_or_exit(opts: &mut gitminer::Options) {
     ap.parse_args_or_exit();
 }
 
- //fn run<E: std::convert::From<std::io::Error> + std::convert::From<git2::Error>>(args: &Args) -> Result<(), E> {
-
-//fn run<E: std::convert::From<git2::Error> + std::convert::From<std::io::Error>>(args: &Args) -> Result<(), E> {
-//fn run<E: std::convert::From<std::io::Error> + std::convert::From<repo::git2::Error>>(args: &Args) -> Result<(), E> {
-//fn run<E: std::convert::From<std::io::Error>>(args: &Args) -> Result<(), E> {
 fn run(args: &Args) -> Result<(), git2::Error> {
 
-
-
     let path = args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string());
+    #[cfg(debug_assertions)]
     println!("path={}",args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()));
+    #[cfg(debug_assertions)]
     println!("path={}",path);
     let repo = Repository::open(&path)?;
     if repo.is_bare() {
         return Err(Error::from_str("cannot report status on bare repository").into());
     }
-
 
     let mut opts = StatusOptions::new();
     opts.include_ignored(args.flag_ignored);
@@ -543,42 +512,28 @@ fn main() {
 
     /// capture repo/weeble/blockheight/wobble
 
+    use gnostr_bins::get_pwd;
     let cwd = get_pwd().unwrap().to_string();
     let weeble = weeble().unwrap();
     let blockheight = blockheight().unwrap();
     let wobble = wobble().unwrap();
+    #[cfg(debug_assertions)]
     println!("{}/{}/{}/{}",
         cwd,
         weeble,
         blockheight,
         wobble);
 
-    //let weeble = gnostr_bins::weeble().unwrap();
-    //let weeble = weeble().unwrap();
-    //println!("weeble");
-    //println!("wobble={}",weeble);
-    ////println!("webble={}",gnostr_bins::get_wobble().unwrap());
-    //let wobble = wobble().unwrap();
-    //println!("wobble");
-    //println!("wobble={}",wobble);
-    ////println!("wobble={}",gnostr_bins::get_wobble().unwrap());
-
-    println!("get_pwd()={}",get_pwd().unwrap());
-    let cwd = get_pwd();
     let mut hasher = Sha256::new();
     hasher.update(get_pwd().unwrap());
     let pwd_hash: String = format!("{:x}", hasher.finalize());
+    #[cfg(debug_assertions)]
     println!("pwd_hash={}",pwd_hash);
 
     //let mut test_message = String::new();
     let mut test_message = "test_message".to_string();
-    //let a: A = AB::A(A).try_into().map_err(Error::msg)?;
-    //let count = thread::available_parallelism()?.get().try_into().map_err(Error::msg);
-    //let count = thread::available_parallelism().get();
     let count = thread::available_parallelism().expect("REASON").get();
-    //TODO reimplement 
-    //let count = 1;
-    //assert!(count >= 1_usize);
+    assert!(count >= 1_usize);
     let mut gitminer_opts = gitminer::Options {
         threads: count.try_into().unwrap(),
         target: "00000".to_string(), //default 00000
@@ -586,7 +541,7 @@ fn main() {
         //part of the gnostr protocol
         //src/worker.rs adds the nonce
         pwd_hash: pwd_hash.clone(),
-        message: cwd.unwrap(),
+        message: get_pwd().unwrap(),
         //message: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
         repo: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
         //repo:    ".".to_string(),
@@ -596,14 +551,23 @@ fn main() {
         blockheight: get_blockheight().unwrap(),
     };
 
+    #[cfg(debug_assertions)]
     println!("gitminer_opts.message={}",gitminer_opts.threads);
+    #[cfg(debug_assertions)]
     println!("gitminer_opts.message={}",gitminer_opts.target);
+    #[cfg(debug_assertions)]
     println!("gitminer_opts.message={}",gitminer_opts.pwd_hash);
+    #[cfg(debug_assertions)]
     println!("gitminer_opts.message={}",gitminer_opts.message);
+    #[cfg(debug_assertions)]
     println!("gitminer_opts.message={}",gitminer_opts.repo);
+    #[cfg(debug_assertions)]
     println!("gitminer_opts.message={:?}",gitminer_opts.timestamp);
+    #[cfg(debug_assertions)]
     println!("gitminer_opts.message={}",gitminer_opts.weeble);
+    #[cfg(debug_assertions)]
     println!("gitminer_opts.message={}",gitminer_opts.wobble);
+    #[cfg(debug_assertions)]
     println!("gitminer_opts.message={}",gitminer_opts.blockheight);
 
     run(&args);
