@@ -565,7 +565,8 @@ fn main() {
         pwd_hash: pwd_hash.clone(),
         message: args.flag_message.clone().unwrap_or_else(||
             //"TODO".to_string()
-            args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
+            //args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string())
+            cwd
             ),
         //message: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
         repo: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
