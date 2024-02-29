@@ -65,6 +65,8 @@ struct Args {
     #[structopt(name = "ignored", long)]
     /// show ignored files as well
     flag_ignored: bool,
+
+    //Option<String>
     #[structopt(name = "opt-modules", long = "untracked-files")]
     /// setting for showing untracked files [no|normal|all]
     flag_untracked_files: Option<String>,
@@ -74,6 +76,12 @@ struct Args {
     #[structopt(name = "dir", long = "git-dir")]
     /// git directory to analyze
     flag_git_dir: Option<String>,
+
+    //gnostr-legit
+    #[structopt(name = "m", long = "message")]
+    /// git commit message
+    flag_message: Option<String>,
+
 
     #[structopt(name = "repeat", long)]
     /// repeatedly show status, sleeping inbetween
@@ -131,6 +139,9 @@ fn parse_args_or_exit(opts: &mut gitminer::Options) {
 fn run(args: &Args) -> Result<(), git2::Error> {
 
     let path = args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string());
+    let message = args.flag_message.clone().unwrap_or_else(|| "TODO".to_string());
+    #[cfg(debug_assertions)]
+    println!("{}",message);
     #[cfg(debug_assertions)]
     println!("path={}",args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()));
     #[cfg(debug_assertions)]
@@ -142,6 +153,7 @@ fn run(args: &Args) -> Result<(), git2::Error> {
 
     let mut opts = StatusOptions::new();
     opts.include_ignored(args.flag_ignored);
+
     match args.flag_untracked_files.as_ref().map(|s| &s[..]) {
         Some("no") => {
             opts.include_untracked(false);
@@ -155,6 +167,7 @@ fn run(args: &Args) -> Result<(), git2::Error> {
         Some(_) => return Err(Error::from_str("invalid untracked-files value").into()),
         None => {}
     }
+
     match args.flag_ignore_submodules.as_ref().map(|s| &s[..]) {
         Some("all") => {
             opts.exclude_submodules(true);
@@ -177,6 +190,12 @@ fn run(args: &Args) -> Result<(), git2::Error> {
         if args.flag_branch {
             show_branch(&repo, &args.format())?;
         }
+        if args.flag_list_submodules {
+            print_submodules(&repo)?;
+        }
+        //if args.flag_message {
+        //    show_branch(&repo, &args.format())?;
+        //}
         if args.flag_list_submodules {
             print_submodules(&repo)?;
         }
@@ -530,8 +549,11 @@ fn main() {
     #[cfg(debug_assertions)]
     println!("pwd_hash={}",pwd_hash);
 
+    let message = args.flag_message.clone().unwrap_or_else(|| "TODO".to_string());
+    //#[cfg(debug_assertions)]
+    println!("554:{}",message);
     //let mut test_message = String::new();
-    let mut test_message = "test_message".to_string();
+    //let mut test_message = "test_message".to_string();
     let count = thread::available_parallelism().expect("REASON").get();
     assert!(count >= 1_usize);
     let mut gitminer_opts = gitminer::Options {
@@ -541,7 +563,7 @@ fn main() {
         //part of the gnostr protocol
         //src/worker.rs adds the nonce
         pwd_hash: pwd_hash.clone(),
-        message: get_pwd().unwrap(),
+        message: args.flag_message.clone().unwrap_or_else(|| "TODO".to_string()),
         //message: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
         repo: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
         //repo:    ".".to_string(),
@@ -557,7 +579,7 @@ fn main() {
     println!("gitminer_opts.message={}",gitminer_opts.target);
     #[cfg(debug_assertions)]
     println!("gitminer_opts.message={}",gitminer_opts.pwd_hash);
-    #[cfg(debug_assertions)]
+    //#[cfg(debug_assertions)]
     println!("gitminer_opts.message={}",gitminer_opts.message);
     #[cfg(debug_assertions)]
     println!("gitminer_opts.message={}",gitminer_opts.repo);
