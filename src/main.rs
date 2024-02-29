@@ -28,8 +28,8 @@ extern crate gnostr_bins;
 use gnostr_bins::weeble;
 use gnostr_bins::wobble;
 use gnostr_bins::blockheight;
-use gnostr_bins::get_pwd;
 
+use gnostr_bins::get_pwd;
 use gnostr_bins::get_weeble;
 use gnostr_bins::get_wobble;
 use gnostr_bins::get_blockheight;
@@ -532,16 +532,26 @@ impl Args {
     }
 }
 
+/// GNOSTR_BINS
+/// WEEBLE/BLOCKHEIGHT/WOBBLE
+/// WEEBLE = FLOOR(UTC / BLOCKHEIGHT)
+/// WOBBLE =      (UTC % BLOCKHEIGHT)
+
 fn main() {
 
     let args = Args::from_args();
 
-    //capture weeble/blockheight/wobble
+    /// capture repo/weeble/blockheight/wobble
 
-    //let weeble = weeble().unwrap();
-    //let wobble = wobble().unwrap();
-    //let blockheight = get_blockheight();
-    //println!("{}/{}/{}",weeble,blockheight,wobble);
+    let cwd = get_pwd().unwrap().to_string();
+    let weeble = weeble().unwrap();
+    let blockheight = blockheight().unwrap();
+    let wobble = wobble().unwrap();
+    println!("{}/{}/{}/{}",
+        cwd,
+        weeble,
+        blockheight,
+        wobble);
 
     //let weeble = gnostr_bins::weeble().unwrap();
     //let weeble = weeble().unwrap();
@@ -583,7 +593,7 @@ fn main() {
         timestamp: time::now(),
         weeble: get_weeble().unwrap(),
         wobble: get_wobble().unwrap(),
-        blockheight: blockheight().unwrap(),
+        blockheight: get_blockheight().unwrap(),
     };
 
     println!("gitminer_opts.message={}",gitminer_opts.threads);
