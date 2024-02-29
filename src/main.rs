@@ -550,7 +550,7 @@ fn main() {
     println!("pwd_hash={}",pwd_hash);
 
     let message = args.flag_message.clone().unwrap_or_else(|| "TODO".to_string());
-    //#[cfg(debug_assertions)]
+    #[cfg(debug_assertions)]
     println!("554:{}",message);
     //let mut test_message = String::new();
     //let mut test_message = "test_message".to_string();
@@ -563,7 +563,10 @@ fn main() {
         //part of the gnostr protocol
         //src/worker.rs adds the nonce
         pwd_hash: pwd_hash.clone(),
-        message: args.flag_message.clone().unwrap_or_else(|| "TODO".to_string()),
+        message: args.flag_message.clone().unwrap_or_else(||
+            //"TODO".to_string()
+            args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
+            ),
         //message: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
         repo: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
         //repo:    ".".to_string(),
