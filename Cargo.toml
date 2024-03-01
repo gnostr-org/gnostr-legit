@@ -1,6 +1,6 @@
 [package]
 name    = "gnostr-legit"
-version = "0.0.6"
+version = "0.0.7"
 authors = ["@RandyMcMillan <randy.lee.mcmillan@gmail.com>", "John <john@throttle.io>"]
 edition = "2018"
 description = "gnostr blob manager and pow miner"
@@ -15,15 +15,23 @@ categories = ["command-line-utilities"]
 [dependencies]
 argparse    = "0.2.2"
 chrono      = "0"
-git2        = "^0.17"
+getopts = "0.2.21"
+git2        = "^0.18"
+gnostr-bins = { version = "0.0.13", path = "../bins" }
+## git2 = "0.18.2"
 pad = "0.1.6"
 rust-crypto = "0.2.36"
 sha2 = "0.10.7"
+structopt = "0.3.26"
 time        = "0.1.42"
 #crypto      = "0.4.0"
 
 [lib]
 path = "src/lib.rs"
 
+
+[profile.release-with-debug]
+inherits = "release"
+debug = true
 
 [workspace]

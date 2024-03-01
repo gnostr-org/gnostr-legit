@@ -117,6 +117,9 @@ cargo-br:cargo-b-release
 cargo-b-release:## 	cargo-b-release
 	[ -x "$(shell command -v $(RUSTUP))" ] || $(MAKE) rustup-install-stable
 	[ -x "$(shell command -v $(CARGO))" ] && $(CARGO) build --release
+cargo-b-release-w-debug:## 	cargo-b-release
+	[ -x "$(shell command -v $(RUSTUP))" ] || $(MAKE) rustup-install-stable
+	[ -x "$(shell command -v $(CARGO))" ] && $(CARGO) build --profile=release-with-debug
 cargo-c:## 	cargo-c
 	[ -x "$(shell command -v $(RUSTC))" ] || $(MAKE) rustup-install-stable
 	[ -x "$(shell command -v $(CARGO))" ] && $(CARGO) c

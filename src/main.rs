@@ -1,519 +1,585 @@
-#![allow(unused)]
-#![allow(dead_code)]
-extern crate chrono;
-use chrono::offset::Utc;
-use chrono::DateTime;
-use std::process::Command;
-//use std::time::SystemTime;
-use std::any::type_name;
-use std::convert::TryInto;
-use std::env;
-use std::io::Result;
-use std::thread::sleep;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
-//use std::mem::size_of;
-use argparse::{ArgumentParser, Store};
-use git2::*;
-use gitminer::Gitminer;
-use pad::{Alignment, PadStr};
-use sha2::{Digest, Sha256};
-use std::{io, thread};
+/*
+ * libgit2 "status" example - shows how to use the status APIs
+ *
+ * Written by the libgit2 contributors
+ *
+ * To the extent possible under law, the author(s) have dedicated all copyright
+ * and related and neighboring rights to this software to the public domain
+ * worldwide. This software is distributed without any warranty.
+ *
+ * You should have received a copy of the CC0 Public Domain Dedication along
+ * with this software. If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
 
-use std::path::PathBuf; //for get_current_dir
+#![allow(warnings)]
+
+use git2::{Error, ErrorCode, Repository, StatusOptions, SubmoduleIgnore};
+use std::str;
+use std::io;
+use std::thread;
+use std::time::Duration;
+use std::convert::TryInto;
+use structopt::StructOpt;
+
+extern crate gnostr_bins;
+use gnostr_bins::weeble;
+use gnostr_bins::wobble;
+use gnostr_bins::blockheight;
+use gnostr_bins::get_pwd;
+
+use gnostr_bins::get_weeble;
+
+use sha2::Digest;
+use sha2::Sha256;
+
+use argparse::ArgumentParser;
+use argparse::Store;
 
 pub mod gitminer;
 pub mod repo;
 pub mod worker;
 
-//fn type_of<T>(_: T) -> &'static str {
-//    type_name::<T>()
-//}
+//let mut gitminer_opts = gitminer::Options {
+//    threads: count.try_into().unwrap(),
+//    target: "00000".to_string(), //default 00000
+//    //gnostr:##:nonce
+//    //part of the gnostr protocol
+//    //src/worker.rs adds the nonce
+//    pwd_hash: pwd_hash.clone(),
+//    message: pwd,
+//    //message: message,
+//    //message: count.to_string(),
+//    //repo:    ".".to_string(),
+//    repo: path.as_path().display().to_string(),
+//    timestamp: time::now(),
+//    weeble,
+//    wobble,
+//    blockheight,
+//    //.duration_since(SystemTime::UNIX_EPOCH)
+//};
 
-fn get_epoch_ms() -> u128 {
-	SystemTime::now()
-		.duration_since(UNIX_EPOCH)
-		.unwrap()
-		.as_millis()
+
+#[derive(StructOpt)]
+struct Args {
+    arg_spec: Vec<String>,
+    #[structopt(name = "long", long)]
+    /// show longer statuses (default)
+    _flag_long: bool,
+    /// show short statuses
+    #[structopt(name = "short", long)]
+    flag_short: bool,
+    #[structopt(name = "porcelain", long)]
+    /// ??
+    flag_porcelain: bool,
+    #[structopt(name = "branch", short, long)]
+    /// show branch information
+    flag_branch: bool,
+    #[structopt(name = "z", short)]
+    /// ??
+    flag_z: bool,
+    #[structopt(name = "ignored", long)]
+    /// show ignored files as well
+    flag_ignored: bool,
+    #[structopt(name = "opt-modules", long = "untracked-files")]
+    /// setting for showing untracked files [no|normal|all]
+    flag_untracked_files: Option<String>,
+    #[structopt(name = "opt-files", long = "ignore-submodules")]
+    /// setting for ignoring submodules [all]
+    flag_ignore_submodules: Option<String>,
+    #[structopt(name = "dir", long = "git-dir")]
+    /// git directory to analyze
+    flag_git_dir: Option<String>,
+
+
+
+
+
+
+    #[structopt(name = "repeat", long)]
+    /// repeatedly show status, sleeping inbetween
+    flag_repeat: bool,
+    #[structopt(name = "list-submodules", long)]
+    /// show submodules
+    flag_list_submodules: bool,
 }
 
-fn convert_to_u32(v: usize) -> Option<i8> {
-	if v > (std::i8::MAX as i32).try_into().unwrap() {
-		None
-	} else {
-		Some(v as i8)
-	}
-}
-
-fn get_current_working_dir() -> std::io::Result<PathBuf> {
-	env::current_dir()
-}
-
-#[cfg(debug_assertions)]
-fn example() {
-	//println!("Debugging enabled");
-	//println!("cwd={:?}",get_current_working_dir());
-}
-
-#[cfg(not(debug_assertions))]
-fn example() {
-	//println!("Debugging disabled");
-	//println!("cwd={:?}",get_current_working_dir());
-}
-
-fn main() -> io::Result<()> {
-	#[allow(clippy::if_same_then_else)]
-	if cfg!(debug_assertions) {
-		//println!("Debugging enabled");
-	} else {
-		//println!("Debugging disabled");
-	}
-
-	#[cfg(debug_assertions)]
-	//println!("Debugging enabled");
-	#[cfg(not(debug_assertions))]
-	//println!("Debugging disabled");
-	example();
-
-	let start = time::get_time();
-	let epoch = get_epoch_ms();
-	//println!("{}", epoch);
-	let system_time = SystemTime::now();
-
-	let datetime: DateTime<Utc> = system_time.into();
-	//println!("{}", datetime.format("%d/%m/%Y %T/%s"));
-	//println!("{}", datetime.format("%d/%m/%Y %T"));
-
-	let cwd = get_current_working_dir();
-	//#[cfg(debug_assertions)]
-	//println!("Debugging enabled");
-	//println!("{:#?}", cwd);
-	let state = repo::state();
-	//println!("{:#?}", state);
-	//
-	let repo_root =
-		std::env::args().nth(1).unwrap_or(".".to_string());
-	//println!("repo_root={:?}", repo_root.as_str());
-	let repo = Repository::open(repo_root.as_str())
-		.expect("Couldn't open repository");
-	//println!("{} state={:?}", repo.path().display(), repo.state());
-	//println!("state={:?}", repo.state());
-
-	//println!("clean {:?}", repo.state());
-	#[allow(clippy::if_same_then_else)]
-	let repo_path = if cfg!(target_os = "windows") {
-		Command::new("cmd")
-			.args(["/C", "cd"])
-			.output()
-			.expect("failed to execute process")
-	} else if cfg!(target_os = "macos") {
-		Command::new("sh")
-			.arg("-c")
-			.arg("pwd")
-			.output()
-			.expect("failed to execute process")
-	} else if cfg!(target_os = "linux") {
-		Command::new("sh")
-			.arg("-c")
-			.arg("pwd")
-			.output()
-			.expect("failed to execute process")
-	} else {
-		Command::new("sh")
-			.arg("-c")
-			.arg("pwd")
-			.output()
-			.expect("failed to execute process")
-	};
-
-	let path = String::from_utf8(repo_path.stdout)
-		.map_err(|non_utf8| {
-			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
-		})
-		.unwrap();
-	//println!("path={:?}", path);
-
-	//#!/bin/bash
-	//declare -a RELAYS
-	//function gnostr-get-relays(){
-
-	//RELAYS=$(curl  'https://api.nostr.watch/v1/online' 2>/dev/null |
-	//    sed -e 's/[{}]/''/g' |
-	//    sed -e 's/\[/''/g' |
-	//    sed -e 's/\]/''/g' |
-	//    sed -e 's/"//g' |
-	//    awk -v k="text" '{n=split($0,a,","); for (i=1; i<=n; i++) print a[i]}') 2>/dev/null
-
-	//echo $RELAYS
-	//}
-	//gnostr-get-relays
-
-	//#!/bin/bash
-	//gnostr-git config --global --replace-all gnostr.relays "$(gnostr-get-relays)" #&& git config -l | grep gnostr.relays
-	#[allow(clippy::if_same_then_else)]
-	let set_relays = if cfg!(target_os = "windows") {
-		Command::new("cmd")
-			.args(["/C", "gnostr-set-relays"])
-			.output()
-			.expect("try:\ngnostr-git config -l | grep gnostr.relays")
-	} else if cfg!(target_os = "macos") {
-		Command::new("sh")
-			.arg("-c")
-			.arg("gnostr-set-relays")
-			.output()
-			.expect("try:\ngnostr-git config -l | grep gnostr.relays")
-	} else if cfg!(target_os = "linux") {
-		Command::new("sh")
-			.arg("-c")
-			.arg("gnostr-set-relays")
-			.output()
-			.expect("try:\ngnostr-git config -l | grep gnostr.relays")
-	} else {
-		Command::new("sh")
-			.arg("-c")
-			.arg("gnostr-set-relays")
-			.output()
-			.expect("try:\ngnostr-git config -l | grep gnostr.relays")
-	};
-
-	let count = thread::available_parallelism()?.get();
-	assert!(count >= 1_usize);
-	//println!("{}={}", type_of(count), (count as i32));
-	//println!("{}={}", type_of(count), (count as i64));
-	//let mut hasher = Sha256::new();
-	//hasher.update(pwd);
-	//// `update` can be called repeatedly and is generic over `AsRef<[u8]>`
-	//hasher.update("String data");
-	//// Note that calling `finalize()` consumes hasher
-	//let hash = hasher.finalize();
-	////println!("Binary hash: {:?}", hash);
-	//println!("hash: {:?}", hash);
-	//println!("sha256 before write: {:x}", hash);
-	//println!("sha256 before write: {:X}", hash);
-
-	let now = SystemTime::now();
-
-	//// we sleep for 2 seconds
-	//sleep(Duration::new(2, 0));
-	// match now.elapsed() {
-	//    Ok(elapsed) => {
-	//        // it prints '2'
-	//        println!("{}", elapsed.as_secs());
-	//    }
-	//    Err(e) => {
-	//        // an error occurred!
-	//        println!("Error: {e:?}");
-	//    }
-	//}
-
-	#[allow(clippy::if_same_then_else)]
-	let get_pwd = if cfg!(target_os = "windows") {
-		Command::new("cmd")
-			.args(["/C", "echo %cd%"])
-			.output()
-			.expect("failed to execute process")
-	} else if cfg!(target_os = "macos") {
-		Command::new("sh")
-			.arg("-c")
-			.arg("echo ${PWD##*/}")
-			.output()
-			.expect("failed to execute process")
-	} else if cfg!(target_os = "linux") {
-		Command::new("sh")
-			.arg("-c")
-			.arg("echo ${PWD##*/}")
-			.output()
-			.expect("failed to execute process")
-	} else {
-		Command::new("sh")
-			.arg("-c")
-			.arg("echo ${PWD##*/}")
-			.output()
-			.expect("failed to execute process")
-	};
-
-	let pwd = String::from_utf8(get_pwd.stdout)
-		.map_err(|non_utf8| {
-			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
-		})
-		.unwrap();
-	//println!("pwd={}", pwd);
-	let mut hasher = Sha256::new();
-	hasher.update(pwd.clone());
-  //sha256sum <(echo gnostr-legit)
-	let pwd_hash: String = format!("{:x}", hasher.finalize());
-	//println!("pwd_hash={:?}", pwd_hash);
-
-	#[allow(clippy::if_same_then_else)]
-	let gnostr_weeble = if cfg!(target_os = "windows") {
-		Command::new("cmd")
-			.args(["/C", "gnostr-weeble || echo weeble"])
-			.output()
-			.expect("failed to execute process")
-	} else if cfg!(target_os = "macos") {
-		Command::new("sh")
-                .arg("-c")
-                .arg("gnostr-weeble 2>/tmp/gnostr-legit.log || echo weeble")
-                .output()
-                .expect("failed to execute process")
-	} else if cfg!(target_os = "linux") {
-		Command::new("sh")
-                .arg("-c")
-                .arg("gnostr-weeble 2>/tmp/gnostr-legit.log || echo weeble")
-                .output()
-                .expect("failed to execute process")
-	} else {
-		Command::new("sh")
-                .arg("-c")
-                .arg("gnostr-weeble 2>/tmp/gnostr-legit.log || echo weeble")
-                .output()
-                .expect("failed to execute process")
-	};
-
-	let weeble = String::from_utf8(gnostr_weeble.stdout)
-		.map_err(|non_utf8| {
-			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
-		})
-		.unwrap();
-
-	//assert_eq!(weeble.is_empty(), true); // a)
-	//
-	//println!("weeble={}", weeble);
-
-	#[allow(clippy::if_same_then_else)]
-	let gnostr_wobble = if cfg!(target_os = "windows") {
-		Command::new("cmd")
-			.args(["/C", "gnostr-wobble"])
-			.output()
-			.expect("failed to execute process")
-	} else if cfg!(target_os = "macos") {
-		Command::new("sh")
-			.arg("-c")
-			.arg("gnostr-wobble || echo wobble")
-			.output()
-			.expect("failed to execute process")
-	} else if cfg!(target_os = "linux") {
-		Command::new("sh")
-			.arg("-c")
-			.arg("gnostr-wobble || echo wobble")
-			.output()
-			.expect("failed to execute process")
-	} else {
-		Command::new("sh")
-			.arg("-c")
-			.arg("gnostr-wobble || echo wobble")
-			.output()
-			.expect("failed to execute process")
-	};
-
-	let wobble = String::from_utf8(gnostr_wobble.stdout)
-		.map_err(|non_utf8| {
-			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
-		})
-		.unwrap();
-	//println!("wobble={}", wobble);
-	#[allow(clippy::if_same_then_else)]
-	let gnostr_blockheight = if cfg!(target_os = "windows") {
-		Command::new("cmd")
-			.args(["/C", "gnostr-blockheight"])
-			.output()
-			.expect("failed to execute process")
-	} else if cfg!(target_os = "macos") {
-		Command::new("sh")
-			.arg("-c")
-			.arg("gnostr-blockheight || echo blockheight")
-			.output()
-			.expect("failed to execute process")
-	} else if cfg!(target_os = "linux") {
-		Command::new("sh")
-			.arg("-c")
-			.arg("gnostr-blockheight || echo blockheight")
-			.output()
-			.expect("failed to execute process")
-	} else {
-		Command::new("sh")
-			.arg("-c")
-			.arg("gnostr-blockheight || echo blockheight")
-			.output()
-			.expect("failed to execute process")
-	};
-
-	let blockheight = String::from_utf8(gnostr_blockheight.stdout)
-		.map_err(|non_utf8| {
-			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
-		})
-		.unwrap();
-	//println!("blockheight={}", blockheight);
-
-	let path = env::current_dir()?;
-
-	//println!("The current directory is {}", path.display());
-
-	let mut opts = gitminer::Options {
-		threads: count.try_into().unwrap(),
-		target: "00000".to_string(), //default 00000
-		//gnostr:##:nonce
-		//part of the gnostr protocol
-		//src/worker.rs adds the nonce
-    pwd_hash: pwd_hash.clone(),
-		message: pwd,
-		//message: message,
-		//message: count.to_string(),
-		//repo:    ".".to_string(),
-		repo: path.as_path().display().to_string(),
-		timestamp: time::now(),
-		weeble,
-		wobble,
-		blockheight,
-		//.duration_since(SystemTime::UNIX_EPOCH)
-	};
-
-	parse_args_or_exit(&mut opts);
-
-	let mut miner = match Gitminer::new(opts) {
-		Ok(m) => m,
-		Err(e) => {
-			panic!("Failed to start git miner: {}", e);
-		}
-	};
-
-	let hash = match miner.mine() {
-		Ok(s) => s,
-		Err(e) => {
-			panic!("Failed to generate commit: {}", e);
-		}
-	};
-
-	let mut hasher = Sha256::new();
-	hasher.update(&hash);
-	// `update` can be called repeatedly and is generic over `AsRef<[u8]>`
-	//hasher.update("String data");
-	// Note that calling `finalize()` consumes hasher
-	//let gnostr_sec = hasher.finalize();
-	let gnostr_sec: String = format!("{:X}", hasher.finalize());
-	//println!("Binary hash: {:?}", hash);
-	//println!("hash before: {:?}", hash);
-	//println!("hash after pad: {:?}", hash);
-	//println!("&hash before: {:?}", &hash);
-	//println!("&hash after pad: {:?}", &hash);
-	//println!("gnostr_sec before pad: {:?}", gnostr_sec);
-	//println!("gnostr_sec after pad: {:?}", gnostr_sec.pad(64, '0', Alignment::Right, true));
-	//println!("&gnostr_sec before pad: {:?}", &gnostr_sec);
-	//println!("&gnostr_sec after pad: {:?}", &gnostr_sec.pad(64, '0', Alignment::Right, true));
-
-	//let s = "12345".pad(64, '0', Alignment::Right, true);
-	//println!("s: {:?}", s);
-	// echo "000000b64a065760e5441bf47f0571cb690b28fc" | openssl dgst -sha256 | sed 's/SHA2-256(stdin)= //g'
-	//
-	//
-	//shell test
-	let touch = Command::new("sh")
-		.args(["-c", "touch ", &hash])
-		.output()
-		.expect("failed to execute process");
-	let touch_event = String::from_utf8(touch.stdout)
-		.map_err(|non_utf8| {
-			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
-		})
-		.unwrap();
-	let cat = Command::new("sh")
-		.args(["-c", "touch ", &hash])
-		.output()
-		.expect("failed to execute process");
-	let cat_event = String::from_utf8(cat.stdout)
-		.map_err(|non_utf8| {
-			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
-		})
-		.unwrap();
-	//shell test
-	//git rev-parse --verify HEAD
-	#[allow(clippy::if_same_then_else)]
-	let event = if cfg!(target_os = "windows") {
-		Command::new("cmd")
-                .args(["/C", "gnostr --sec $(gnostr-sha256 $(gnostr-weeble || echo)) -t gnostr --tag weeble $(gnostr-weeble || echo weeble) --tag wobble $(gnostr-wobble || echo wobble) --tag blockheight $(gnostr-blockheight || echo blockheight) --content \"$(gnostr-git diff HEAD~1 || gnostr-git diff)\" "])
-                .output()
-                .expect("failed to execute process")
-	} else if cfg!(target_os = "macos") {
-		Command::new("sh")
-                .args(["-c", "gnostr --sec $(gnostr-sha256 $(gnostr-weeble || echo)) -t gnostr --tag weeble $(gnostr-weeble || echo weeble) --tag wobble $(gnostr-wobble || echo wobble) --tag blockheight $(gnostr-blockheight || echo blockheight) --content \"$(gnostr-git show HEAD)\" "])
-                .output()
-                .expect("failed to execute process")
-	} else if cfg!(target_os = "linux") {
-		Command::new("sh")
-                .args(["-c", "gnostr --sec $(gnostr-sha256 $(gnostr-weeble || echo)) -t gnostr --tag weeble $(gnostr-weeble || echo weeble) --tag wobble $(gnostr-wobble || echo wobble) --tag blockheight $(gnostr-blockheight || echo blockheight) --content \"$(gnostr-git diff HEAD~1 || gnostr-git diff)\" "])
-                .output()
-                .expect("failed to execute process")
-	} else {
-		Command::new("sh")
-                .args(["-c", "gnostr --sec $(gnostr-sha256 $(gnostr-weeble || echo)) -t gnostr --tag weeble $(gnostr-weeble || echo weeble) --tag wobble $(gnostr-wobble || echo wobble) --tag blockheight $(gnostr-blockheight || echo blockheight) --content \"$(gnostr-git diff HEAD~1 || gnostr-git diff)\" "])
-                .output()
-                .expect("failed to execute process")
-	};
-
-	let gnostr_event = String::from_utf8(event.stdout)
-		.map_err(|non_utf8| {
-			String::from_utf8_lossy(non_utf8.as_bytes()).into_owned()
-		})
-		.unwrap();
-
-	//assert...
-	//echo gnostr|openssl dgst -sha256 | sed 's/SHA2-256(stdin)= //g'
-
-	//gnostr-legit must only return a sha256 generated by the
-	//recent commit hash
-	//to enable nested commands
-	//REF:
-	//gnostr --hash $(gnostr legit . -p 00000 -m "git rev-parse --verify HEAD")
-	//gnostr --sec $(gnostr --hash $(gnostr legit . -p 00000 -m "git rev-parse --verify HEAD"))
-	//Example:
-	//gnostr --sec $(gnostr --hash $(gnostr legit . -p 00000 -m "#gnostr will exist!")) --envelope --content "$(gnostr-git log -n 1)" | gnostr-cat -u wss://relay.damus.io
-	//
-	//
-	//
-	let duration = time::get_time() - start;
-	//println!("Success! Generated commit {} in {} seconds", hash, duration.num_seconds());
-	println!("{}", gnostr_event);
-	Ok(())
+#[derive(Eq, PartialEq)]
+enum Format {
+    Long,
+    Short,
+    Porcelain,
 }
 
 fn parse_args_or_exit(opts: &mut gitminer::Options) {
-	let mut ap = ArgumentParser::new();
-	ap.set_description(
-		"Generate git commit sha with a custom prefix",
-	);
-	ap.stop_on_first_argument(false);
+    let mut ap = ArgumentParser::new();
+    ap.set_description("Generate git commit sha with a custom prefix");
+    ap.stop_on_first_argument(false);
 
-	//ap.refer(&mut opts.repo)
-	//    //.add_argument("repository-path", Store, "Path to your git repository (required)");
-	//    .add_argument("repository-path", Store, "Path to your git repository");
-	//    //.required();
-	ap.refer(&mut opts.repo).add_argument(
-		"repository-path",
-		Store,
-		"Path to your git repository",
-	);
+    //ap.refer(&mut opts.repo)
+    //    //.add_argument("repository-path", Store, "Path to your git repository (required)");
+    //    .add_argument("repository-path", Store, "Path to your git repository");
+    //    //.required();
+    ap.refer(&mut opts.repo)
+        .add_argument("repository-path", Store, "Path to your git repository");
 
-	ap.refer(&mut opts.target).add_option(
-		&["-p", "--prefix"],
-		Store,
-		"Desired commit prefix (required)",
-	);
-	//.required();
+    ap.refer(&mut opts.target).add_option(
+        &["-p", "--prefix"],
+        Store,
+        "Desired commit prefix (required)",
+    );
+    //.required();
 
-	ap.refer(&mut opts.threads).add_option(
-		&["-t", "--threads"],
-		Store,
-		"Number of worker threads to use (default 8)",
-	);
+    ap.refer(&mut opts.threads).add_option(
+        &["-t", "--threads"],
+        Store,
+        "Number of worker threads to use (default 8)",
+    );
 
-	ap.refer(&mut opts.message).add_option(
-		&["-m", "--message"],
-		Store,
-		"Commit message to use (required)",
-	);
-	//.required();
+    ap.refer(&mut opts.message).add_option(
+        &["-m", "--message"],
+        Store,
+        "Commit message to use (required)",
+    );
+    //.required();
 
-	//ap.refer(&mut opts.timestamp)
-	//    .add_option(&["--timestamp"], Store, "Commit timestamp to use (default now)");
+    //ap.refer(&mut opts.timestamp)
+    //    .add_option(&["--timestamp"], Store, "Commit timestamp to use (default now)");
 
-	ap.parse_args_or_exit();
+    ap.parse_args_or_exit();
 }
+
+
+//fn run<E: std::convert::From<git2::Error> + std::convert::From<std::io::Error>>(args: &Args) -> Result<(), E> {
+fn run(args: &Args) -> Result<(), Error> {
+
+
+
+    let path = args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string());
+    println!("path={}",args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()));
+    println!("path={}",path);
+    let repo = Repository::open(&path)?;
+    if repo.is_bare() {
+        return Err(Error::from_str("cannot report status on bare repository").into());
+    }
+
+    //let weeble = gnostr_bins::weeble().unwrap();
+    //let weeble = weeble().unwrap();
+    //println!("weeble");
+    //println!("wobble={}",weeble);
+    ////println!("webble={}",gnostr_bins::get_wobble().unwrap());
+    //let wobble = wobble().unwrap();
+    //println!("wobble");
+    //println!("wobble={}",wobble);
+    ////println!("wobble={}",gnostr_bins::get_wobble().unwrap());
+
+    println!("get_pwd()={}",get_pwd().unwrap());
+    let mut hasher = Sha256::new();
+    hasher.update(get_pwd().unwrap());
+    let pwd_hash: String = format!("{:x}", hasher.finalize());
+    println!("pwd_hash={}",pwd_hash);
+
+    //let mut test_message = String::new();
+    let mut test_message = "test_message".to_string();
+    //let count = thread::available_parallelism()?.get();
+    //let count = thread::available_parallelism().get();
+    //TODO reimplement 
+    //let count = 1;
+    //assert!(count >= 1_usize);
+    //let mut gitminer_opts = gitminer::Options {
+    //    threads: count.try_into().unwrap(),
+    //    target: "00000".to_string(), //default 00000
+    //    //gnostr:##:nonce
+    //    //part of the gnostr protocol
+    //    //src/worker.rs adds the nonce
+    //    pwd_hash: pwd_hash.clone(),
+    //    message: test_message,//args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
+    //    //message: message,
+    //    //message: count.to_string(),
+    //    //repo:    ".".to_string(),
+    //    repo: args.flag_git_dir.clone().unwrap_or_else(|| ".".to_string()),
+    //    timestamp: time::now(),
+    //    weeble: weeble().unwrap().to_string(),
+    //    wobble: wobble().unwrap().to_string(),
+    //    blockheight: blockheight().unwrap().to_string(),
+    //    //.duration_since(SystemTime::UNIX_EPOCH)
+    //};
+
+    let mut opts = StatusOptions::new();
+    opts.include_ignored(args.flag_ignored);
+    match args.flag_untracked_files.as_ref().map(|s| &s[..]) {
+        Some("no") => {
+            opts.include_untracked(false);
+        }
+        Some("normal") => {
+            opts.include_untracked(true);
+        }
+        Some("all") => {
+            opts.include_untracked(true).recurse_untracked_dirs(true);
+        }
+        Some(_) => return Err(Error::from_str("invalid untracked-files value").into()),
+        None => {}
+    }
+    match args.flag_ignore_submodules.as_ref().map(|s| &s[..]) {
+        Some("all") => {
+            opts.exclude_submodules(true);
+        }
+        Some(_) => return Err(Error::from_str("invalid ignore-submodules value").into()),
+        None => {}
+    }
+    opts.include_untracked(!args.flag_ignored);
+    for spec in &args.arg_spec {
+        opts.pathspec(spec);
+    }
+
+    loop {
+        if args.flag_repeat {
+            println!("\u{1b}[H\u{1b}[2J");
+        }
+
+        let statuses = repo.statuses(Some(&mut opts))?;
+
+        if args.flag_branch {
+            show_branch(&repo, &args.format())?;
+        }
+        if args.flag_list_submodules {
+            print_submodules(&repo)?;
+        }
+
+        if args.format() == Format::Long {
+            print_long(&statuses);
+        } else {
+            print_short(&repo, &statuses);
+        }
+
+        if args.flag_repeat {
+            std::thread::sleep(Duration::new(10, 0));
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+fn show_branch(repo: &Repository, format: &Format) -> Result<(), Error> {
+    let head = match repo.head() {
+        Ok(head) => Some(head),
+        Err(ref e) if e.code() == ErrorCode::UnbornBranch || e.code() == ErrorCode::NotFound => {
+            None
+        }
+        Err(e) => return Err(e),
+    };
+    let head = head.as_ref().and_then(|h| h.shorthand());
+
+    if format == &Format::Long {
+        println!(
+            "# On branch {}",
+            head.unwrap_or("Not currently on any branch")
+        );
+    } else {
+        println!("## {}", head.unwrap_or("HEAD (no branch)"));
+    }
+    Ok(())
+}
+
+fn print_submodules(repo: &Repository) -> Result<(), Error> {
+    let modules = repo.submodules()?;
+    println!("# Submodules");
+    for sm in &modules {
+        println!(
+            "# - submodule '{}' at {}",
+            sm.name().unwrap(),
+            sm.path().display()
+        );
+    }
+    Ok(())
+}
+
+// This function print out an output similar to git's status command in long
+// form, including the command-line hints.
+fn print_long(statuses: &git2::Statuses) {
+    let mut header = false;
+    let mut rm_in_workdir = false;
+    let mut changes_in_index = false;
+    let mut changed_in_workdir = false;
+
+    // Print index changes
+    for entry in statuses
+        .iter()
+        .filter(|e| e.status() != git2::Status::CURRENT)
+    {
+        if entry.status().contains(git2::Status::WT_DELETED) {
+            rm_in_workdir = true;
+        }
+        let istatus = match entry.status() {
+            s if s.contains(git2::Status::INDEX_NEW) => "new file: ",
+            s if s.contains(git2::Status::INDEX_MODIFIED) => "modified: ",
+            s if s.contains(git2::Status::INDEX_DELETED) => "deleted: ",
+            s if s.contains(git2::Status::INDEX_RENAMED) => "renamed: ",
+            s if s.contains(git2::Status::INDEX_TYPECHANGE) => "typechange:",
+            _ => continue,
+        };
+        if !header {
+            println!(
+                "\
+# Changes to be committed:
+#   (use \"git reset HEAD <file>...\" to unstage)
+#"
+            );
+            header = true;
+        }
+
+        let old_path = entry.head_to_index().unwrap().old_file().path();
+        let new_path = entry.head_to_index().unwrap().new_file().path();
+        match (old_path, new_path) {
+            (Some(old), Some(new)) if old != new => {
+                println!("#\t{}  {} -> {}", istatus, old.display(), new.display());
+            }
+            (old, new) => {
+                println!("#\t{}  {}", istatus, old.or(new).unwrap().display());
+            }
+        }
+    }
+
+    if header {
+        changes_in_index = true;
+        println!("#");
+    }
+    header = false;
+
+    // Print workdir changes to tracked files
+    for entry in statuses.iter() {
+        // With `Status::OPT_INCLUDE_UNMODIFIED` (not used in this example)
+        // `index_to_workdir` may not be `None` even if there are no differences,
+        // in which case it will be a `Delta::Unmodified`.
+        if entry.status() == git2::Status::CURRENT || entry.index_to_workdir().is_none() {
+            continue;
+        }
+
+        let istatus = match entry.status() {
+            s if s.contains(git2::Status::WT_MODIFIED) => "modified: ",
+            s if s.contains(git2::Status::WT_DELETED) => "deleted: ",
+            s if s.contains(git2::Status::WT_RENAMED) => "renamed: ",
+            s if s.contains(git2::Status::WT_TYPECHANGE) => "typechange:",
+            _ => continue,
+        };
+
+        if !header {
+            println!(
+                "\
+# Changes not staged for commit:
+#   (use \"git add{} <file>...\" to update what will be committed)
+#   (use \"git checkout -- <file>...\" to discard changes in working directory)
+#\
+                ",
+                if rm_in_workdir { "/rm" } else { "" }
+            );
+            header = true;
+        }
+
+        let old_path = entry.index_to_workdir().unwrap().old_file().path();
+        let new_path = entry.index_to_workdir().unwrap().new_file().path();
+        match (old_path, new_path) {
+            (Some(old), Some(new)) if old != new => {
+                println!("#\t{}  {} -> {}", istatus, old.display(), new.display());
+            }
+            (old, new) => {
+                println!("#\t{}  {}", istatus, old.or(new).unwrap().display());
+            }
+        }
+    }
+
+    if header {
+        changed_in_workdir = true;
+        println!("#");
+    }
+    header = false;
+
+    // Print untracked files
+    for entry in statuses
+        .iter()
+        .filter(|e| e.status() == git2::Status::WT_NEW)
+    {
+        if !header {
+            println!(
+                "\
+# Untracked files
+#   (use \"git add <file>...\" to include in what will be committed)
+#"
+            );
+            header = true;
+        }
+        let file = entry.index_to_workdir().unwrap().old_file().path().unwrap();
+        println!("#\t{}", file.display());
+    }
+    header = false;
+
+    // Print ignored files
+    for entry in statuses
+        .iter()
+        .filter(|e| e.status() == git2::Status::IGNORED)
+    {
+        if !header {
+            println!(
+                "\
+# Ignored files
+#   (use \"git add -f <file>...\" to include in what will be committed)
+#"
+            );
+            header = true;
+        }
+        let file = entry.index_to_workdir().unwrap().old_file().path().unwrap();
+        println!("#\t{}", file.display());
+    }
+
+    if !changes_in_index && changed_in_workdir {
+        println!(
+            "no changes added to commit (use \"git add\" and/or \
+             \"git commit -a\")"
+        );
+    }
+}
+
+// This version of the output prefixes each path with two status columns and
+// shows submodule status information.
+fn print_short(repo: &Repository, statuses: &git2::Statuses) {
+    for entry in statuses
+        .iter()
+        .filter(|e| e.status() != git2::Status::CURRENT)
+    {
+        let mut istatus = match entry.status() {
+            s if s.contains(git2::Status::INDEX_NEW) => 'A',
+            s if s.contains(git2::Status::INDEX_MODIFIED) => 'M',
+            s if s.contains(git2::Status::INDEX_DELETED) => 'D',
+            s if s.contains(git2::Status::INDEX_RENAMED) => 'R',
+            s if s.contains(git2::Status::INDEX_TYPECHANGE) => 'T',
+            _ => ' ',
+        };
+        let mut wstatus = match entry.status() {
+            s if s.contains(git2::Status::WT_NEW) => {
+                if istatus == ' ' {
+                    istatus = '?';
+                }
+                '?'
+            }
+            s if s.contains(git2::Status::WT_MODIFIED) => 'M',
+            s if s.contains(git2::Status::WT_DELETED) => 'D',
+            s if s.contains(git2::Status::WT_RENAMED) => 'R',
+            s if s.contains(git2::Status::WT_TYPECHANGE) => 'T',
+            _ => ' ',
+        };
+
+        if entry.status().contains(git2::Status::IGNORED) {
+            istatus = '!';
+            wstatus = '!';
+        }
+        if istatus == '?' && wstatus == '?' {
+            continue;
+        }
+        let mut extra = "";
+
+        // A commit in a tree is how submodules are stored, so let's go take a
+        // look at its status.
+        //
+        // TODO: check for GIT_FILEMODE_COMMIT
+        let status = entry.index_to_workdir().and_then(|diff| {
+            let ignore = SubmoduleIgnore::Unspecified;
+            diff.new_file()
+                .path_bytes()
+                .and_then(|s| str::from_utf8(s).ok())
+                .and_then(|name| repo.submodule_status(name, ignore).ok())
+        });
+        if let Some(status) = status {
+            if status.contains(git2::SubmoduleStatus::WD_MODIFIED) {
+                extra = " (new commits)";
+            } else if status.contains(git2::SubmoduleStatus::WD_INDEX_MODIFIED)
+                || status.contains(git2::SubmoduleStatus::WD_WD_MODIFIED)
+            {
+                extra = " (modified content)";
+            } else if status.contains(git2::SubmoduleStatus::WD_UNTRACKED) {
+                extra = " (untracked content)";
+            }
+        }
+
+        let (mut a, mut b, mut c) = (None, None, None);
+        if let Some(diff) = entry.head_to_index() {
+            a = diff.old_file().path();
+            b = diff.new_file().path();
+        }
+        if let Some(diff) = entry.index_to_workdir() {
+            a = a.or_else(|| diff.old_file().path());
+            b = b.or_else(|| diff.old_file().path());
+            c = diff.new_file().path();
+        }
+
+        match (istatus, wstatus) {
+            ('R', 'R') => println!(
+                "RR {} {} {}{}",
+                a.unwrap().display(),
+                b.unwrap().display(),
+                c.unwrap().display(),
+                extra
+            ),
+            ('R', w) => println!(
+                "R{} {} {}{}",
+                w,
+                a.unwrap().display(),
+                b.unwrap().display(),
+                extra
+            ),
+            (i, 'R') => println!(
+                "{}R {} {}{}",
+                i,
+                a.unwrap().display(),
+                c.unwrap().display(),
+                extra
+            ),
+            (i, w) => println!("{}{} {}{}", i, w, a.unwrap().display(), extra),
+        }
+    }
+
+    for entry in statuses
+        .iter()
+        .filter(|e| e.status() == git2::Status::WT_NEW)
+    {
+        println!(
+            "?? {}",
+            entry
+                .index_to_workdir()
+                .unwrap()
+                .old_file()
+                .path()
+                .unwrap()
+                .display()
+        );
+    }
+}
+
+impl Args {
+    fn format(&self) -> Format {
+        if self.flag_short {
+            Format::Short
+        } else if self.flag_porcelain || self.flag_z {
+            Format::Porcelain
+        } else {
+            Format::Long
+        }
+    }
+}
+
+fn main() {
+
+    //capture weeble/blockheight/wobble
+
+    let weeble = weeble().unwrap();
+    let wobble = wobble().unwrap();
+    let blockheight = blockheight().unwrap();
+    println!("{}/{}/{}",weeble,blockheight,wobble);
+
+    let args = Args::from_args();
+    run(&args);
+    //match run(&args) {
+    //    Ok(()) => {}
+    //    Err(e) => println!("error: {}", e),
+    //}
+}
+
