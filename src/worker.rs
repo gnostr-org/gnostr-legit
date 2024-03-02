@@ -100,8 +100,7 @@ impl Worker {
 			parent {}\n\
 			author {} {}\n\
 			committer {} {}\n\n\
-            \n\n
-            \n\n\n\"tree\":\"{}\",\"parent\":\"{}\",\"weeble\":\"{:04}\",\"blockheight\":\"{:06}\",\"wobble\":\"{:}\",\"bit\":\"{:02}\",\"nonce\":\"{:08x}\",\"message\":\"{:}\"",
+            \"tree\":\"{}\",\"parent\":\"{}\",\"weeble\":\"{:04}\",\"blockheight\":\"{:06}\",\"wobble\":\"{:}\",\"bit\":\"{:02}\",\"nonce\":\"{:08x}\",\"message\":\"{:}\"",
 			self.tree,
 			self.parent,
 			self.author, tstamp, //author
