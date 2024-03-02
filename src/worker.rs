@@ -98,8 +98,7 @@ impl Worker {
 			self.id, value,
 			self.message
 		);
-
-    //print!("{}\n",raw);
+        print!("{}\n",raw);
 
 		//be careful when changing - fails silently when wrong.
 		let blob = format!("commit {}\0{}", raw.len(), raw);
