@@ -79,28 +79,30 @@ impl Worker {
 		tstamp: &str,
 	) -> (String, String) {
 
-    print!("self.message={}\n",self.message);
+        if cfg!(debug_assertions) {
+            print!("self.message={}\n",self.message);
 
-    print!("self.tree={}\n",self.tree);
-    print!("self.parent={}\n",self.parent);
-    print!("self.author={}\n",self.author);
-    print!("self.author={}\n",self.author);
-    //print!("self.committer={}\n",self.committer);
-    print!("self.tree={}\n",self.tree);
-    print!("self.parent={}\n",self.parent);
-    print!("self.weeble.trim()={}\n",self.weeble.trim());
-    print!("self.blockheight.trim()={}\n",self.blockheight.trim());
-    print!("self.wobble.trim()={}\n",self.wobble.trim());
-    print!("self.id={}\n",self.id);
-    print!("self.value={}\n", value);
-    print!("self.message={}\n",self.message);
+            print!("self.tree={}\n",self.tree);
+            print!("self.parent={}\n",self.parent);
+            print!("self.author={}\n",self.author);
+            print!("self.author={}\n",self.author);
+            //print!("self.committer={}\n",self.committer);
+            print!("self.tree={}\n",self.tree);
+            print!("self.parent={}\n",self.parent);
+            print!("self.weeble.trim()={}\n",self.weeble.trim());
+            print!("self.blockheight.trim()={}\n",self.blockheight.trim());
+            print!("self.wobble.trim()={}\n",self.wobble.trim());
+            print!("self.id={}\n",self.id);
+            print!("self.value={}\n", value);
+            print!("self.message={}\n",self.message);
+        }
 
 		let raw = format!(
 			"tree {}\n\
 			parent {}\n\
 			author {} {}\n\
 			committer {} {}\n\n\
-            {}/{}/{}/{}\n\n\"tree\":\"{}\",\"parent\":\"{}\",\"weeble\":\"{:04}\",\"blockheight\":\"{:06}\",\"wobble\":\"{:}\",\"bit\":\"{:02}\",\"nonce\":\"{:08x}\",\"message\":\"{:}\"",
+            {}/{}/{}:{}\n\n\"tree\":\"{}\",\"parent\":\"{}\",\"weeble\":\"{:04}\",\"blockheight\":\"{:06}\",\"wobble\":\"{:}\",\"bit\":\"{:02}\",\"nonce\":\"{:08x}\",\"message\":\"{:}\"",
 
             //below are in essential format
 			self.tree,
@@ -124,11 +126,15 @@ impl Worker {
 			self.id, value,
 			self.message
 		);
+        if cfg!(debug_assertions) {
         print!("raw={}\n",raw);
+        }
 
 		//be careful when changing - fails silently when wrong.
 		let blob = format!("commit {}\0{}", raw.len(), raw);
+        if cfg!(debug_assertions) {
         print!("blob={}\n",blob);
+        }
 
 		(raw, blob)
 	}
