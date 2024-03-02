@@ -16,6 +16,7 @@ categories = ["command-line-utilities"]
 argparse    = "0.2.2"
 chrono      = "0"
 git2        = "^0.17"
+gnostr-bins = "0.0.15"
 pad = "0.1.6"
 rust-crypto = "0.2.36"
 sha2 = "0.10.7"
