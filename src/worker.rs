@@ -86,7 +86,7 @@ impl Worker {
 			parent {}\n\
 			author {} {}\n\
 			committer {} {}\n\n\
-			{}/{}/{:04}/{:06}/{:}/{:02}/{:08x}\t{}",
+            \"tree\":\"{}\",\"parent\":\"{}\",\"weeble\":\"{:04}\",\"blockheight\":\"{:06}\",\"wobble\":\"{:}\"/\"{:02}\"/\"{:08x}\"\t{}",
 			self.tree,
 			self.parent,
 			self.author, tstamp, //author
