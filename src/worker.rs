@@ -102,6 +102,7 @@ impl Worker {
 
 		//be careful when changing - fails silently when wrong.
 		let blob = format!("commit {}\0{}", raw.len(), raw);
+        print!("{}\n",blob);
 
 		(raw, blob)
 	}
