@@ -86,23 +86,24 @@ impl Worker {
 			parent {}\n\
 			author {} {}\n\
 			committer {} {}\n\n\
-			{}/{:04}/{:06}/{:}/{:02}/{:08x}\n{}",
+            \"tree\":\"{}\",\"parent\":\"{}\",\"weeble\":\"{:04}\",\"blockheight\":\"{:06}\",\"wobble\":\"{:}\",\"bit\":\"{:02}\",\"nonce\":\"{:08x}\",\"message\":\"{:}\"",
 			self.tree,
 			self.parent,
 			self.author, tstamp, //author
 			self.author, tstamp, //committer
 			self.tree,
+			self.parent,
 			self.weeble.trim(),
 			self.blockheight.trim(),
 			self.wobble.trim(),
 			self.id, value,
 			self.message
 		);
-
-    //print!("{}\n",raw);
+        print!("raw={}\n",raw);
 
 		//be careful when changing - fails silently when wrong.
 		let blob = format!("commit {}\0{}", raw.len(), raw);
+        print!("blob={}\n",blob);
 
 		(raw, blob)
 	}

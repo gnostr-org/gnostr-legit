@@ -25,6 +25,12 @@ pub mod gitminer;
 pub mod repo;
 pub mod worker;
 
+extern crate gnostr_bins;
+use gnostr_bins::get_pwd;
+use gnostr_bins::get_weeble;
+use gnostr_bins::get_blockheight;
+use gnostr_bins::get_wobble;
+
 //fn type_of<T>(_: T) -> &'static str {
 //    type_name::<T>()
 //}
@@ -83,7 +89,8 @@ fn main() -> io::Result<()> {
 	//println!("{}", datetime.format("%d/%m/%Y %T/%s"));
 	//println!("{}", datetime.format("%d/%m/%Y %T"));
 
-	let cwd = get_current_working_dir();
+	//let cwd = get_current_working_dir();
+	let cwd = get_pwd();
 	//#[cfg(debug_assertions)]
 	//println!("Debugging enabled");
 	//println!("{:#?}", cwd);
@@ -344,6 +351,9 @@ fn main() -> io::Result<()> {
 		.unwrap();
 	//println!("blockheight={}", blockheight);
 
+
+
+
 	let path = env::current_dir()?;
 
 	//println!("The current directory is {}", path.display());
@@ -355,7 +365,7 @@ fn main() -> io::Result<()> {
 		//part of the gnostr protocol
 		//src/worker.rs adds the nonce
     pwd_hash: pwd_hash.clone(),
-		message: pwd,
+		message: cwd.unwrap(),
 		//message: message,
 		//message: count.to_string(),
 		//repo:    ".".to_string(),
