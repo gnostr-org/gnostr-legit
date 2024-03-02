@@ -30,6 +30,9 @@ use gnostr_bins::get_pwd;
 use gnostr_bins::get_weeble;
 use gnostr_bins::get_blockheight;
 use gnostr_bins::get_wobble;
+use gnostr_bins::post_event;
+use gnostr_types::{ClientMessage, Event, Filter, RelayMessage, SubscriptionId};
+
 
 //fn type_of<T>(_: T) -> &'static str {
 //    type_name::<T>()
@@ -481,6 +484,12 @@ fn main() -> io::Result<()> {
 	//
 	let duration = time::get_time() - start;
 	//println!("Success! Generated commit {} in {} seconds", hash, duration.num_seconds());
+    //
+    //
+    let relay_url = "wss://nos.lol";
+    let event: Event = serde_json::from_str(&gnostr_event).unwrap();
+                    gnostr_bins::post_event(relay_url, event);
+
 	println!("{}", gnostr_event);
 	Ok(())
 }

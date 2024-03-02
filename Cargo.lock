@@ -668,8 +668,10 @@ dependencies = [
  "chrono",
  "git2",
  "gnostr-bins",
+ "gnostr-types",
  "pad",
  "rust-crypto",
+ "serde_json",
  "sha2",
  "time",
 ]
