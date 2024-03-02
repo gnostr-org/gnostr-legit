@@ -1,6 +1,6 @@
 [package]
 name    = "gnostr-legit"
-version = "0.0.8"
+version = "0.0.9"
 authors = ["@RandyMcMillan <randy.lee.mcmillan@gmail.com>", "John <john@throttle.io>"]
 edition = "2018"
 description = "gnostr blob manager and pow miner"
