@@ -25,6 +25,9 @@ pub mod gitminer;
 pub mod repo;
 pub mod worker;
 
+extern crate gnostr_bins;
+use gnostr_bins::get_pwd;
+
 //fn type_of<T>(_: T) -> &'static str {
 //    type_name::<T>()
 //}
@@ -83,7 +86,8 @@ fn main() -> io::Result<()> {
 	//println!("{}", datetime.format("%d/%m/%Y %T/%s"));
 	//println!("{}", datetime.format("%d/%m/%Y %T"));
 
-	let cwd = get_current_working_dir();
+	//let cwd = get_current_working_dir();
+	let cwd = get_pwd();
 	//#[cfg(debug_assertions)]
 	//println!("Debugging enabled");
 	//println!("{:#?}", cwd);
