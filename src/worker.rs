@@ -100,7 +100,7 @@ impl Worker {
 			parent {}\n\
 			author {} {}\n\
 			committer {} {}\n\n\
-            {}\n\n\"tree\":\"{}\",\"parent\":\"{}\",\"weeble\":\"{:04}\",\"blockheight\":\"{:06}\",\"wobble\":\"{:}\",\"bit\":\"{:02}\",\"nonce\":\"{:08x}\",\"message\":\"{:}\"",
+            {}/{}/{}/{}\n\n\"tree\":\"{}\",\"parent\":\"{}\",\"weeble\":\"{:04}\",\"blockheight\":\"{:06}\",\"wobble\":\"{:}\",\"bit\":\"{:02}\",\"nonce\":\"{:08x}\",\"message\":\"{:}\"",
 
             //below are in essential format
 			self.tree,
@@ -109,8 +109,14 @@ impl Worker {
 			self.author, tstamp, //committer
             //above are in essential format
 
+			//first element is commit subject line
+			self.weeble.trim(),
+			self.blockheight.trim(),
+			self.wobble.trim(),
 			self.message,
-			self.message,
+
+            //event body
+			self.tree,
 			self.parent,
 			self.weeble.trim(),
 			self.blockheight.trim(),
