@@ -1,9 +1,9 @@
 [package]
 name    = "gnostr-legit"
-version = "0.0.9"
+version = "0.0.10"
 authors = ["@RandyMcMillan <randy.lee.mcmillan@gmail.com>", "John <john@throttle.io>"]
 edition = "2018"
-description = "gnostr blob manager and pow miner"
+description = "gnostr-legit: blob manager and pow miner"
 documentation = "https://legit.gnostr.org"
 readme = "README.md"
 homepage = "https://legit.gnostr.org/"
