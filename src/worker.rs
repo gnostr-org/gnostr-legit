@@ -105,7 +105,8 @@ impl Worker {
 			self.parent,
 			self.author, tstamp, //author
 			self.author, tstamp, //committer
-			self.tree,
+            //above are in essential format
+			self.message,
 			self.parent,
 			self.weeble.trim(),
 			self.blockheight.trim(),
