@@ -79,7 +79,21 @@ impl Worker {
 		tstamp: &str,
 	) -> (String, String) {
 
-    //print!("{}\n",self.tree);
+    print!("self.message={}\n",self.message);
+
+    print!("self.tree={}\n",self.tree);
+    print!("self.parent={}\n",self.parent);
+    print!("self.author={}\n",self.author);
+    print!("self.author={}\n",self.author);
+    //print!("self.committer={}\n",self.committer);
+    print!("self.tree={}\n",self.tree);
+    print!("self.parent={}\n",self.parent);
+    print!("self.weeble.trim()={}\n",self.weeble.trim());
+    print!("self.blockheight.trim()={}\n",self.blockheight.trim());
+    print!("self.wobble.trim()={}\n",self.wobble.trim());
+    print!("self.id={}\n",self.id);
+    print!("self.value={}\n", value);
+    print!("self.message={}\n",self.message);
 
 		let raw = format!(
 			"tree {}\n\
