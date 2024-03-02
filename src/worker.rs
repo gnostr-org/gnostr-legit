@@ -86,6 +86,7 @@ impl Worker {
 			parent {}\n\
 			author {} {}\n\
 			committer {} {}\n\n\
+            \n\n
             \n\"tree\":\"{}\",\"parent\":\"{}\",\"weeble\":\"{:04}\",\"blockheight\":\"{:06}\",\"wobble\":\"{:}\",\"bit\":\"{:02}\",\"nonce\":\"{:08x}\",\"message\":\"{:}\"",
 			self.tree,
 			self.parent,
@@ -99,7 +100,7 @@ impl Worker {
 			self.id, value,
 			self.message
 		);
-        //print!("raw={}\n",raw);
+        print!("raw={}\n",raw);
 
 		//be careful when changing - fails silently when wrong.
 		let blob = format!("commit {}\0{}", raw.len(), raw);
