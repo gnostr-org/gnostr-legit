@@ -123,7 +123,7 @@ cargo-c:## 	cargo-c
 install:cargo-install## 	install
 cargo-i:## 	cargo-i
 	[ -x "$(shell command -v $(RUSTC))" ] || $(MAKE) rustup-install-stable
-	[ -x "$(shell command -v $(CARGO))" ] && $(CARGO) install --path .
+	[ -x "$(shell command -v $(CARGO))" ] && $(CARGO) install --path . --force
 
 -include Makefile
 -include cargo.mk
