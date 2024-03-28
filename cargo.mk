@@ -6,7 +6,7 @@ cargo-help:### 	cargo-help
 cargo-install:### 	cargo install --path .
 #@. $(HOME)/.cargo/env
 	#@cargo install --path $(PWD)
-	@cargo install --locked --path $(PWD)
+	@cargo install --locked --path $(PWD) --force
 
 cargo-check:### 	cargo-check
 ## cargo c
