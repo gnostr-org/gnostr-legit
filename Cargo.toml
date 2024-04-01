@@ -27,6 +27,3 @@ time        = "0.1.42"
 
 [lib]
 path = "src/lib.rs"
-
-
-[workspace]
