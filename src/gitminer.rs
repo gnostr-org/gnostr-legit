@@ -110,7 +110,7 @@ impl Gitminer {
          * and pipe it into the .gnostr/blobs/<hash>
          */
 
-        let tmpfile  = format!("/tmp/{}.tmp",hash);
+        let tmpfile  = format!("/tmp/{}.tmp", hash);
         let mut file = File::create(&Path::new(&tmpfile))
             .ok()
             .expect(&format!("Failed to create temporary file {}", &tmpfile));
@@ -133,23 +133,23 @@ impl Gitminer {
             .arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/blobs/{} && git show {} > .gnostr/blobs/{}", self.opts.repo, hash, hash, hash))
             .output()
             .ok()
-            .expect("Failed to write .gnostr/blobs/<hash>");
+            .expect(&format!("Failed to write .gnostr/blobs/{}", &hash));
 
         Ok(())
     }//end write_commit
 
     fn write_reflog(&self, hash: &String, blob: &String) -> Result<(), &'static str> {
 
-//REF:
-//gnostr-git reflog --format='wss://{RELAY}/{REPO}/%C(auto)%H/%<|(17)%gd:commit:%s'
-//gnostr-git-reflog -f
-//write the reflog
-//the new reflog is associated with a commit
-//we will use gnostr-git-reflog -f
-//for an integrity check as well
-//to test the 'gnostr' protocol
-//write the reflog
-//
+    //REF:
+    //gnostr-git reflog --format='wss://{RELAY}/{REPO}/%C(auto)%H/%<|(17)%gd:commit:%s'
+    //gnostr-git-reflog -f
+    //write the reflog
+    //the new reflog is associated with a commit
+    //we will use gnostr-git-reflog -f
+    //for an integrity check as well
+    //to test the 'gnostr' protocol
+    //write the reflog
+    //
         Command::new("sh")
             .arg("-c")
             .arg(format!("cd {} && mkdir -p .gnostr/reflog && touch -f .gnostr/reflog/{} && git reflog --format='wss://{}/{}/%C(auto)%H/%<|(17)%gd:commit:%s' > .gnostr/reflog/{}", self.opts.repo, hash, "{RELAY}", "{REPO}", hash))
@@ -181,7 +181,7 @@ impl Gitminer {
             .arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/blobs/{} && git show {} > .gnostr/blobs/{}", self.opts.repo, hash, hash, hash))
             .output()
             .ok()
-            .expect("Failed to write .gnostr/blobs/<hash>");
+            .expect(&format!("Failed to write .gnostr/blobs/{}", &hash));
 
 
         Ok(())
@@ -237,6 +237,7 @@ impl Gitminer {
 
         Ok((head_1))
     }
+
     fn prepare_tree(repo: &mut git2::Repository) -> Result<(String, String), &'static str> {
         Gitminer::ensure_no_unstaged_changes(repo)?;
 
@@ -267,7 +268,7 @@ impl Gitminer {
             if status_entry.status().intersects(m) {
                 println!("Please stash all unstaged changes before running.");
                 //return Err("Please stash all unstaged changes before running.");
-                process::exit(1)
+                process::exit(0)
             }
         }
 

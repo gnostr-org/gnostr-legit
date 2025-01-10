@@ -59,14 +59,15 @@ impl Worker {
                            parent {}\n\
                            author {} {}\n\
                            committer {} {}\n\n\
-                           {:02}:{:08x}:{}",
+						   {}\n\n{:02}:{:08x}",
                           self.tree,
                           self.parent,
                           self.author, tstamp,
                           self.author, tstamp,
+                          self.message,
                           self.id,
-                          value,
-                          self.message);
+                          value
+						  );
         let blob = format!("commit {}\0{}", raw.len(), raw);
 
         (raw, blob)
