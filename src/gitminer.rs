@@ -133,7 +133,7 @@ impl Gitminer {
             .arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/blobs/{} && git show {} > .gnostr/blobs/{}", self.opts.repo, hash, hash, hash))
             .output()
             .ok()
-            .expect("Failed to write .gnostr/blobs/<hash>");
+            .expect(&format!("Failed to write .gnostr/blobs/{}", &hash));
 
         Ok(())
     }//end write_commit
@@ -181,7 +181,7 @@ impl Gitminer {
             .arg(format!("cd {} && mkdir -p .gnostr && touch -f .gnostr/blobs/{} && git show {} > .gnostr/blobs/{}", self.opts.repo, hash, hash, hash))
             .output()
             .ok()
-            .expect("Failed to write .gnostr/blobs/<hash>");
+            .expect(&format!("Failed to write .gnostr/blobs/{}", &hash));
 
 
         Ok(())
@@ -237,6 +237,7 @@ impl Gitminer {
 
         Ok((head_1))
     }
+
     fn prepare_tree(repo: &mut git2::Repository) -> Result<(String, String), &'static str> {
         Gitminer::ensure_no_unstaged_changes(repo)?;
 
@@ -267,7 +268,7 @@ impl Gitminer {
             if status_entry.status().intersects(m) {
                 println!("Please stash all unstaged changes before running.");
                 //return Err("Please stash all unstaged changes before running.");
-                process::exit(1)
+                process::exit(0)
             }
         }
 
